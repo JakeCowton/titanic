@@ -13,17 +13,16 @@ class Passenger(object):
     cabin = None
     embarked = None
 
-    def __init__(p_id ,survival, p_class, name, sex, age, n_sib_sp, n_pa_ch,
-                 ticket, fare, cabin, embarked):
-        p_id = p_id
-        survival = survival
-        p_class = p_class
-        name = name
-        sex = sex
-        age = age
-        n_sib_sp = n_sib_sp
-        n_pa_ch = n_pa_ch
-        ticket = ticket
-        fare = fare
-        cabin = cabin
-        embarked = embarked
+    def __init__(self, csv_row):
+        p_id = csv_row[0]
+        survival = csv_row[1]
+        p_class = csv_row[2]
+        name = csv_row[3]
+        sex = csv_row[4]
+        age = csv_row[5]
+        n_sib_sp = csv_row[6]
+        n_pa_ch = csv_row[7]
+        ticket = csv_row[8]
+        fare = csv_row[9]
+        cabin = csv_row[10]
+        embarked = csv_row[11]
