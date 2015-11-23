@@ -3,6 +3,8 @@ utils.py
 
 Utility functions for titanic data analysis
 """
+import pandas as pd
+
 
 def write_results(filename, ids, output):
     root_path = "/home/jake/src/ncl/titanic/outputs/"
@@ -13,21 +15,14 @@ def write_results(filename, ids, output):
 
     return True
 
-def read_data():
+def get_training_data():
     train_df = pd.read_csv("../data/train.csv", header=0)
-    test_df = pd.read_csv("../data/test.csv", header=0)
+    return train_df.values[0:89]
 
-    return train_df, test_df
+def get_evaluation_data():
+    train_df = pd.read_csv("../data/train.csv", header=0)
+    return train_df.values[90:]
 
-def get_pclass_data(train_df, test_df):
-    train_df = train_df.drop(["PassengerId",
-                              "Name", "Sex", "Age", "SibSp", "Parch",
-                              "Ticket", "Fare", "Cabin", "Embarked"],
-                              axis=1)
-
-    test_df = test_df.drop(["PassengerId",
-                            "Name", "Sex", "Age", "SibSp", "Parch",
-                            "Ticket", "Fare", "Cabin", "Embarked"],
-                              axis=1)
-
-    return train_df, test_ids, test_df
+def get_testing_data():
+    test_df = pd.read_csv("../data/test.csv", header=0).values
+    return test_df.values
