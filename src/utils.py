@@ -18,3 +18,16 @@ def read_data():
     test_df = pd.read_csv("../data/test.csv", header=0)
 
     return train_df, test_df
+
+def get_pclass_data(train_df, test_df):
+    train_df = train_df.drop(["PassengerId",
+                              "Name", "Sex", "Age", "SibSp", "Parch",
+                              "Ticket", "Fare", "Cabin", "Embarked"],
+                              axis=1)
+
+    test_df = test_df.drop(["PassengerId",
+                            "Name", "Sex", "Age", "SibSp", "Parch",
+                            "Ticket", "Fare", "Cabin", "Embarked"],
+                              axis=1)
+
+    return train_df, test_ids, test_df

@@ -6,20 +6,16 @@ from utils import write_results, read_data
 
 
 def random_forest():
+    """
+    A random forest classifier
+    """
     print "Random Forest Classifier"
 
     train_df, test_df = read_data()
 
-    train_df = train_df.drop(["PassengerId",
-                              "Name", "Sex", "Age", "SibSp", "Parch",
-                              "Ticket", "Fare", "Cabin", "Embarked"],
-                              axis=1)
+    ids = test_df.PassengerId.values
 
-    test_ids = test_df.PassengerId.values
-    test_df = test_df.drop(["PassengerId",
-                            "Name", "Sex", "Age", "SibSp", "Parch",
-                            "Ticket", "Fare", "Cabin", "Embarked"],
-                              axis=1)
+    train_df, test_df = get_pclass_data()
 
     train_data = train_df.values
     test_data = test_df.values
@@ -33,6 +29,18 @@ def random_forest():
     output = forest.predict(test_data).astype(int)
 
     print "Writing results..."
-    write_results("rand_forest.csv", test_ids, output)
+    write_results("rand_forest.csv", ids, output)
 
     print "Done!"
+
+def bp_nn():
+    """
+    A back-propagating neural network
+    """
+    print "Back-propagating neural network"
+
+    train_df, test_df = read_data()
+
+    ids = test_df.PassengerId.values
+
+    train_df, test_df = get_pclass_data()
