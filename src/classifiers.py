@@ -102,7 +102,7 @@ def slp():
 
     massaged_train_data = []
     for sample in train_data:
-        massaged_train_data.append([[sample[0]], sample[1]])
+        massaged_train_data.append([[sample[1]], sample[0]])
 
     perceptron = create_slp(massaged_train_data)
 

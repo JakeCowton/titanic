@@ -83,6 +83,8 @@ def create_slp(data):
         # Calculate the MSE - epoch error / number of sets
         mse = float(error/len(training_data))
 
+        print "The MSE of %d epochs is %.10f" % (epochs, mse)
+
         # Increment the epoch number
         epochs += 1
 
