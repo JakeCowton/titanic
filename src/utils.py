@@ -38,8 +38,7 @@ def get_testing_data():
 
 def calculate_accuracy(output):
     """
-    output[x][0] = PassengerId
-    output[x][1] = Survived
+    E.g. output[x] = 0
     Should be 90 in length
     """
     if len(output) != 90:
