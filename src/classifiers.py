@@ -17,16 +17,18 @@ def random_forest():
 
     ids = test_df.PassengerId.values
 
+    # Drop all but class and survived
     train_df = train_df.drop(["PassengerId",
                               "Name", "Sex", "Age", "SibSp", "Parch",
                               "Ticket", "Fare", "Cabin", "Embarked"],
                               axis=1)
-
+    # Drop all but class
     eval_df = eval_df.drop(["PassengerId", "Survived",
                             "Name", "Sex", "Age", "SibSp", "Parch",
                             "Ticket", "Fare", "Cabin", "Embarked"],
                             axis=1)
 
+    # Drop all but class
     test_df = test_df.drop(["PassengerId",
                              "Name", "Sex", "Age", "SibSp", "Parch",
                              "Ticket", "Fare", "Cabin", "Embarked"],
@@ -36,7 +38,7 @@ def random_forest():
     eval_data = eval_df.values
     test_data = test_df.values
 
-    forest = RandomForestClassifier(n_estimators=100,
+    forest = RandomForestClassifier(n_estimators=1000,
                                     criterion="entropy")
     print "Training..."
     inputs = train_data[0::,1::]
