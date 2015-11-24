@@ -50,12 +50,13 @@ def calculate_accuracy(output):
                   "Name", "Sex", "Age", "SibSp", "Parch",
                   "Ticket", "Fare", "Cabin", "Embarked"],
                   axis=1)
-    eval_data = eval_df.values
+    eval_data = eval_df.values[0::,0]
 
     correct = 0
 
     for i in range(len(output)):
-        if output[i] == eval_data[i][0]:
+        if output[i] == eval_data[i]:
             correct += 1
 
+    print "%d were correctly predicted" % correct
     return correct / 90.0 # Number of eval samples

@@ -36,7 +36,7 @@ def random_forest():
     eval_data = eval_df.values
     test_data = test_df.values
 
-    forest = RandomForestClassifier(n_estimators=10000,
+    forest = RandomForestClassifier(n_estimators=100,
                                     criterion="entropy")
     print "Training..."
     inputs = train_data[0::,1::]
