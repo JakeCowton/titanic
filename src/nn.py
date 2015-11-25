@@ -88,9 +88,9 @@ class NN(object):
 		changes = []
 
 		# Calculate output error
-		error = target - self.layers[-1]
-		change = error*sigmoid_first_d(self.layers[-1])
-		changes.append(error)
+		self.error = target - self.layers[-1]
+		change = self.error*sigmoid_first_d(self.layers[-1])
+		changes.append(self.error)
 
 		# Calculate hidden errors
 		# This range is from the hightest layer down to the lowest
@@ -108,4 +108,4 @@ class NN(object):
 			self.weights[i] += lr*weight_difference + momentum*self.dw[i]
 			self.dw[i] = weight_difference
 
-		return (error**2).sum()
+		return (self.error**2).sum()

@@ -89,3 +89,6 @@ def find_mse(nn, data):
 	mse = mse / len(data)
 
 	return mse
+
+def get_error(nn):
+	return nn.error
