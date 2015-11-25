@@ -205,3 +205,17 @@ def mlp():
     print "--- Done ---"
 
     return True
+
+def ga_mlp():
+    train_df = get_training_data()
+    eval_df = get_evaluation_data()
+    test_df = get_testing_data()
+
+    ids = test_df.PassengerId.values
+
+    train_df = train_df.drop(["PassengerId", "Name", "Ticket", "Cabin"],
+                              axis=1)
+    eval_df = eval_df.drop(["PassengerId", "Name", "Ticket", "Cabin"],
+                            axis=1)
+    test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin"],
+                            axis=1)

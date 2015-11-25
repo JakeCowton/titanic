@@ -1,5 +1,6 @@
 import numpy as np
 from deap import creator, base, tools, algorithms
+import fuckit
 
 
 class FeatureSelection(object):
@@ -64,8 +65,53 @@ class FeatureSelection(object):
 
         return translation
 
-    def evaluate_ind(self):
-        pass
+    def get_feature_name(index):
+        translation = [
+            "Pclass",
+            "Sex",
+            "Age",
+            "SibSp",
+            "Parch",
+            "Fare",
+            "Cabin",
+            "Embarked"
+        ]
+        return translation[index]
+
+    def evaluate_ind(self, ind):
+        no_of_inputs = ind.count(1)
+
+        train_data = normalise(self.data)
+
+        for i in range(len(ind)):
+            if ind[i] == 0:
+                train_data.drop([get_feature_name(i)])
+
+        train_data = train_data.values
+
+        data = np.zeros(800, dtype=[('inputs',  int, no_of_inputs),
+                                    ('outputs', int, 1)])
+
+        for i in range(len(train_data)):
+            data[i]['inputs'] = train_data[i]
+            data[i]['outputs'] = train_data[i][0]
+
+    def normalise_data(data):
+        for sample in data:
+            with fuckit:
+                # Sex
+                if sample.Sex == "Male": sample.Sex = 1
+                else: sample.Sex = 0
+
+                # Embarked
+                if sample.Embarked == "C": sample.Embarked = 0
+                elif sample.Embarked == "S": sample.Embarked = 1
+                else: sample.Embarked = 2
+
+                # Fare (ignore after the decimal)
+                sample.Fare = int(sample.Fare)
+
+        return data
 
     def calculate(self):
         pop = self.toolbox.population(n=300)
