@@ -79,7 +79,21 @@ class FeatureSelection(object):
         return translation[index]
 
     def evaluate_ind(self, ind):
-        pass
+        no_of_inputs = ind.count(1)
+        test_data = massage_data(get_training_data(), ind)
+        nn = create_nn(test_data, (no_of_inputs, 3, 3, 1))
+
+        eval_data = massage_data(get_evaluation_date(), ind)
+
+        evaluation = []
+        for sample in eval_data:
+            out = call_nn(nn, sample[0])
+            if out >= 0.5:
+                evaluation.append(1)
+            else:
+                evaluation.append(0)
+
+        return calculate_accuracy(evaluation)
 
     def massage_data(raw_data, individual):
 
