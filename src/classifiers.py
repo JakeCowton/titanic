@@ -5,6 +5,7 @@ from utils import write_results, get_training_data,\
                   calculate_accuracy
 from slp import create_slp
 from nn_manager import create_nn, call_nn
+from ga_feature_selection import FeatureSelector
 
 
 def random_forest():
@@ -213,9 +214,40 @@ def ga_mlp():
 
     ids = test_df.PassengerId.values
 
-    train_df = train_df.drop(["PassengerId", "Name", "Ticket", "Cabin"],
-                              axis=1)
-    eval_df = eval_df.drop(["PassengerId", "Name", "Ticket", "Cabin"],
-                            axis=1)
-    test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin"],
-                            axis=1)
+    ga = FeatureSelector()
+    features = ga.calculate()
+
+    train_data = ga.massage_data_with_outputs(train_df, features)
+    eval_data = ga.massage_data_with_outputs(eval_df, features)
+    test_data = ga.massage_data_without_outputs(test_df, features)
+
+    no_of_inputs = features.count(1)
+    test_data = massage_data_with_outputs(get_training_data(), ind)
+    nn = create_nn(test_data, (no_of_inputs, 3, 3, 1))
+
+    eval_data = massage_data_with_outputs(get_evaluation_date(), ind)
+
+    evaluation = []
+    for sample in eval_data:
+        out = call_nn(nn, sample[0])
+        if out >= 0.5:
+            evaluation.append(1)
+        else:
+            evaluation.append(0)
+
+    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+
+    output = []
+    for sample in test_data:
+        out = call_nn(nn, sample[0])
+        if out >= 0.5:
+            output.append(1)
+        else:
+            output.append(0)
+
+    print "Writing results..."
+    write_results("mlp.csv", ids, output)
+
+    print "--- Done ---"
+
+    return True
