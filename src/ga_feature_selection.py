@@ -79,39 +79,53 @@ class FeatureSelection(object):
         return translation[index]
 
     def evaluate_ind(self, ind):
-        no_of_inputs = ind.count(1)
+        pass
 
-        train_data = normalise(self.data)
+    def massage_data(raw_data, individual):
 
-        for i in range(len(ind)):
-            if ind[i] == 0:
-                train_data.drop([get_feature_name(i)])
+        outputs = raw_data.Survived.values
 
-        train_data = train_data.values
+        inputs = raw_data.drop([
+                                    "Survived",
+                                    "PassengerId",
+                                    "Name",
+                                    "Ticket",
+                                    "Cabin"
+                               ], axis=1)
 
-        data = np.zeros(800, dtype=[('inputs',  int, no_of_inputs),
-                                    ('outputs', int, 1)])
+        for i in range(len(individual)):
+            if individual[i] == 0:
+                inputs.drop(get_feature_name(i))
 
-        for i in range(len(train_data)):
-            data[i]['inputs'] = train_data[i]
-            data[i]['outputs'] = train_data[i][0]
+        inputs = normalise_data(inputs)
+
+        nn_data = np.zeros(800, dtype=[('inputs',  int, len(inputs[0])),
+                                       ('outputs', int, 1)])
+
+        nn_data['outputs'] = outputs
+        nn_data["inputs"] = inputs
+
+        return nn_data
 
     def normalise_data(data):
-        for sample in data:
-            with fuckit:
-                # Sex
-                if sample.Sex == "Male": sample.Sex = 1
-                else: sample.Sex = 0
+        out = []
+        for sample in data.iterrows():
+            # Sex
+            if sample[1].Sex == "male": sample[1].Sex = 1
+            else: sample[1].Sex = 0
 
-                # Embarked
-                if sample.Embarked == "C": sample.Embarked = 0
-                elif sample.Embarked == "S": sample.Embarked = 1
-                else: sample.Embarked = 2
+            # Embarked
+            if sample[1].Embarked == "C": sample[1].Embarked = 0
+            elif sample[1].Embarked == "S": sample[1].Embarked = 1
+            else: sample[1].Embarked = 2
 
-                # Fare (ignore after the decimal)
-                sample.Fare = int(sample.Fare)
+            # Fare (ignore after the decimal)
+            sample[1].Fare = int(sample[1].Fare)
+            sample[1].Age = int(sample[1].Age)
 
-        return data
+            out.append(sample[1].values)
+
+        return out
 
     def calculate(self):
         pop = self.toolbox.population(n=300)
