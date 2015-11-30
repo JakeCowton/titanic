@@ -75,7 +75,7 @@ class FeatureSelector(object):
     def evaluate_ind(self, ind):
         no_of_inputs = ind.count(1)
         test_data = self.massage_data_with_outputs(get_training_data(), ind)
-        nn = create_nn(test_data, (no_of_inputs, 3, 3, 1))
+        nn = create_nn(test_data, (no_of_inputs, 3, 1))
 
         eval_data = self.massage_data_with_outputs(get_evaluation_data(), ind)
 
@@ -88,10 +88,11 @@ class FeatureSelector(object):
                 evaluation.append(0)
 
         accuracy = calculate_accuracy(evaluation)
+        print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
 
-        # # Optional
-        # if accuracy > 0.8:
-        #     raise FoundEarlySolution
+        # Optional
+        if accuracy > 0.8:
+            raise FoundEarlySolution
 
         return accuracy
 

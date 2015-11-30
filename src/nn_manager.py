@@ -4,7 +4,7 @@ import numpy as np
 from os import system as sys
 from nn import NN
 
-def _train(net, data, epochs=100, lr=0.01, momentum=0.1):
+def _train(net, data, epochs, lr, momentum):
 	"""
 	Train `net` with `data`
 	:param net: the network to train
@@ -19,7 +19,7 @@ def _train(net, data, epochs=100, lr=0.01, momentum=0.1):
 			net.feed_forward(data['inputs'][n])
 			net.back_propagate(data['outputs'][n], lr, momentum)
 
-def create_nn(data, structure):
+def create_nn(data, structure, epochs=100, lr=0.01, momentum=0.1):
 	"""
 	Create and train the neural network
 	:type data: ndarray
@@ -29,7 +29,7 @@ def create_nn(data, structure):
 	:returns: A trained NN object
 	"""
 	ann = NN(structure)
-	_train(ann, data)
+	_train(ann, data, epochs, lr, momentum)
 	return ann
 
 def _normalise(data):

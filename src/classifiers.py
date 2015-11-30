@@ -224,7 +224,7 @@ def ga_mlp():
 
     no_of_inputs = features.count(1)
     test_data = massage_data_with_outputs(get_training_data(), ind)
-    nn = create_nn(test_data, (no_of_inputs, 3, 3, 1))
+    nn = create_nn(test_data, (no_of_inputs, 3, 1))
 
     eval_data = massage_data_with_outputs(get_evaluation_date(), ind)
 

@@ -57,5 +57,4 @@ def calculate_accuracy(output):
         if output[i] == eval_data[i]:
             correct += 1
 
-    print "%d of 90 were correctly predicted" % correct
     return correct / 90.0 # Number of eval samples
