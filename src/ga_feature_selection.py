@@ -14,8 +14,7 @@ class FeatureSelector(object):
 
         # Attribute generator
         self.toolbox.register("attr_gen",
-                              self.individual_generator,
-                              self.event_plan[:])
+                              self.individual_generator)
 
         # Structure initialisers
         self.toolbox.register("individual",
@@ -74,10 +73,10 @@ class FeatureSelector(object):
 
     def evaluate_ind(self, ind):
         no_of_inputs = ind.count(1)
-        test_data = massage_data_with_outputs(get_training_data(), ind)
+        test_data = self.massage_data_with_outputs(get_training_data(), ind)
         nn = create_nn(test_data, (no_of_inputs, 3, 3, 1))
 
-        eval_data = massage_data_with_outputs(get_evaluation_data(), ind)
+        eval_data = self.massage_data_with_outputs(get_evaluation_data(), ind)
 
         evaluation = []
         for sample in eval_data:
@@ -108,11 +107,11 @@ class FeatureSelector(object):
         inputs_to_drop = []
         for i in range(len(individual)):
             if individual[i] == 0:
-                inputs_to_drop.append(get_feature_name(i))
+                inputs_to_drop.append(self.get_feature_name(i))
 
         inputs.drop(inputs_to_drop)
 
-        inputs = normalise_data(inputs)
+        inputs = self.normalise_data(inputs)
 
         nn_data = np.zeros(800, dtype=[('inputs',  int, len(inputs[0])),
                                        ('outputs', int, 1)])
@@ -133,9 +132,9 @@ class FeatureSelector(object):
 
         for i in range(len(individual)):
             if individual[i] == 0:
-                inputs.drop(get_feature_name(i))
+                inputs.drop(self.get_feature_name(i))
 
-        inputs = normalise_data(inputs)
+        inputs = self.normalise_data(inputs)
 
         return inputs
 
@@ -178,3 +177,6 @@ class FeatureSelector(object):
             return hof[0]
 
         return hof[0]
+
+class FoundEarlySolution(Exception):
+    pass
