@@ -129,7 +129,6 @@ class FeatureSelector(object):
 
     def massage_data_without_outputs(self, raw_data, individual):
         inputs = raw_data.drop([
-                                    "Survived",
                                     "PassengerId",
                                     "Name",
                                     "Ticket",

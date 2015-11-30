@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from utils import write_results, get_training_data,\
                   get_evaluation_data, get_testing_data,\
-                  calculate_accuracy
+                  calculate_accuracy, get_all_training_data
 from slp import create_slp
 from nn_manager import create_nn, call_nn
 from ga_feature_selection import FeatureSelector
@@ -212,6 +212,7 @@ def ga_mlp():
     train_df = get_training_data()
     eval_df = get_evaluation_data()
     test_df = get_testing_data()
+    all_train_df = get_all_training_data()
 
     ids = test_df.PassengerId.values
 
@@ -223,10 +224,7 @@ def ga_mlp():
     test_data = ga.massage_data_without_outputs(test_df, features)
 
     no_of_inputs = features.count(1)
-    test_data = massage_data_with_outputs(get_training_data(), ind)
-    nn = create_nn(test_data, (no_of_inputs, 3, 1))
-
-    eval_data = massage_data_with_outputs(get_evaluation_date(), ind)
+    nn = create_nn(train_data, (no_of_inputs, 3, 1))
 
     evaluation = []
     for sample in eval_data:
@@ -237,6 +235,10 @@ def ga_mlp():
             evaluation.append(0)
 
     print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+
+    all_train_df = get_all_training_data()
+    all_train_data = ga.massage_data_with_outputs(all_train_df, features)
+    nn = create_nn(all_train_data, (no_of_inputs, 3, 1))
 
     output = []
     for sample in test_data:

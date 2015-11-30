@@ -29,6 +29,10 @@ def get_evaluation_data():
     train_df = pd.read_csv("../data/train.csv", header=0)
     return train_df[801:]
 
+def get_all_training_data():
+    train_df = pd.read_csv("../data/train.csv", header=0)
+    return train_df
+
 def get_testing_data():
     """
     Gets the testing data

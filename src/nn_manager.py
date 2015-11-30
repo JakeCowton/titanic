@@ -15,7 +15,7 @@ def _train(net, data, epochs, lr, momentum):
 	"""
 	for i in range(epochs):
 		# Run one epoch
-		for n in range(data.size):
+		for n in range(len(data)):
 			net.feed_forward(data['inputs'][n])
 			net.back_propagate(data['outputs'][n], lr, momentum)
 
