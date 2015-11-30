@@ -46,7 +46,7 @@ class FeatureSelector(object):
     def individual_generator(self):
         return np.random.randint(2, size=7)
 
-    def codec_to_english(codec):
+    def codec_to_english(self, codec):
         translation = {
             "Pclass": codec[0],
             "Sex": codec[1],
@@ -59,7 +59,7 @@ class FeatureSelector(object):
 
         return translation
 
-    def get_feature_name(index):
+    def get_feature_name(self, index):
         translation = [
             "Pclass",
             "Sex",
@@ -94,7 +94,7 @@ class FeatureSelector(object):
 
         return accuracy
 
-    def massage_data_with_outputs(raw_data, individual):
+    def massage_data_with_outputs(self, raw_data, individual):
         outputs = raw_data.Survived.values
 
         inputs = raw_data.drop([
@@ -121,7 +121,7 @@ class FeatureSelector(object):
 
         return nn_data
 
-    def massage_data_without_outputs(raw_data, individual):
+    def massage_data_without_outputs(self, raw_data, individual):
         inputs = raw_data.drop([
                                     "Survived",
                                     "PassengerId",
@@ -138,7 +138,7 @@ class FeatureSelector(object):
 
         return inputs
 
-    def normalise_data(data):
+    def normalise_data(self, data):
         out = []
         for sample in data.iterrows():
             # Sex
