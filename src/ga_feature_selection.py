@@ -8,7 +8,7 @@ from nn_manager import create_nn, call_nn
 class FeatureSelector(object):
 
     def __init__(self):
-        creator.create("FitnessMulti", base.Fitness, weights=(-1., 1.))
+        creator.create("FitnessMulti", base.Fitness, weights=(1.,))
         creator.create("Individual", list, fitness=creator.FitnessMulti)
 
         self.toolbox = base.Toolbox()
@@ -29,6 +29,8 @@ class FeatureSelector(object):
 
         # Register the toolbox functions
         self.register_functions()
+
+        self.early_solution = None
 
     def register_functions(self):
         """
@@ -92,6 +94,7 @@ class FeatureSelector(object):
 
         # Optional
         if accuracy > 0.8:
+            self.early_solution = ind
             raise FoundEarlySolution
 
         return accuracy
@@ -203,7 +206,7 @@ class FeatureSelector(object):
                                 no_of_iterations, stats=stats,
                                 halloffame=hof, verbose=False)
         except FoundEarlySolution:
-            return hof[0]
+            return self.early_solution
 
         return hof[0]
 
