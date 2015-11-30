@@ -249,7 +249,7 @@ def ga_mlp():
             output.append(0)
 
     print "Writing results..."
-    write_results("mlp.csv", ids, output)
+    write_results("ga_mlp.csv", ids, output)
 
     print "--- Done ---"
 
