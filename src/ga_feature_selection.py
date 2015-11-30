@@ -109,7 +109,7 @@ class FeatureSelector(object):
             if individual[i] == 0:
                 inputs_to_drop.append(self.get_feature_name(i))
 
-        inputs.drop(inputs_to_drop)
+        inputs.drop(inputs_to_drop, axis=1)
 
         inputs = self.normalise_data(inputs)
 
@@ -130,9 +130,12 @@ class FeatureSelector(object):
                                     "Cabin"
                                ], axis=1)
 
+        inputs_to_drop = []
         for i in range(len(individual)):
             if individual[i] == 0:
-                inputs.drop(self.get_feature_name(i))
+                inputs_to_drop.append(self.get_feature_name(i))
+
+        inputs.drop(inputs_to_drop, axis=1)
 
         inputs = self.normalise_data(inputs)
 
