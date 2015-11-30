@@ -6,11 +6,7 @@ from utils import get_training_data, get_evaluation_data,\
 
 class FeatureSelector(object):
 
-    def __init__(self, data):
-        # Massage data
-        pass
-
-    def setup_ga(self):
+    def __init__(self):
         creator.create("FitnessMulti", base.Fitness, weights=(-1., 1.))
         creator.create("Individual", list, fitness=creator.FitnessMulti)
 
@@ -81,7 +77,7 @@ class FeatureSelector(object):
         test_data = massage_data_with_outputs(get_training_data(), ind)
         nn = create_nn(test_data, (no_of_inputs, 3, 3, 1))
 
-        eval_data = massage_data_with_outputs(get_evaluation_date(), ind)
+        eval_data = massage_data_with_outputs(get_evaluation_data(), ind)
 
         evaluation = []
         for sample in eval_data:
@@ -91,7 +87,13 @@ class FeatureSelector(object):
             else:
                 evaluation.append(0)
 
-        return calculate_accuracy(evaluation)
+        accuracy = calculate_accuracy(evaluation)
+
+        # # Optional
+        # if accuracy > 0.8:
+        #     raise FoundEarlySolution
+
+        return accuracy
 
     def massage_data_with_outputs(raw_data, individual):
         outputs = raw_data.Survived.values
