@@ -2,6 +2,7 @@ import numpy as np
 from deap import creator, base, tools, algorithms
 from utils import get_training_data, get_evaluation_data,\
                   get_testing_data, calculate_accuracy
+from nn_manager import create_nn, call_nn
 
 
 class FeatureSelector(object):
@@ -109,12 +110,13 @@ class FeatureSelector(object):
             if individual[i] == 0:
                 inputs_to_drop.append(self.get_feature_name(i))
 
-        inputs.drop(inputs_to_drop, axis=1)
+        inputs = inputs.drop(inputs_to_drop, axis=1)
 
         inputs = self.normalise_data(inputs)
 
-        nn_data = np.zeros(800, dtype=[('inputs',  int, len(inputs[0])),
-                                       ('outputs', int, 1)])
+        nn_data = np.zeros(len(raw_data),
+                           dtype=[('inputs',  int, len(inputs[0])),
+                                  ('outputs', int, 1)])
 
         nn_data['outputs'] = outputs
         nn_data["inputs"] = inputs
@@ -135,7 +137,7 @@ class FeatureSelector(object):
             if individual[i] == 0:
                 inputs_to_drop.append(self.get_feature_name(i))
 
-        inputs.drop(inputs_to_drop, axis=1)
+        inputs = inputs.drop(inputs_to_drop, axis=1)
 
         inputs = self.normalise_data(inputs)
 
@@ -143,19 +145,42 @@ class FeatureSelector(object):
 
     def normalise_data(self, data):
         out = []
+
+        try:
+            data["Age"] = data["Age"].fillna(data["Age"].median())
+        except KeyError:
+            # This means it was dropped because of the GA
+            pass
+
         for sample in data.iterrows():
             # Sex
-            if sample[1].Sex == "male": sample[1].Sex = 1
-            else: sample[1].Sex = 0
-
+            try:
+                if sample[1].Sex == "male": sample[1].Sex = 1.0
+                else: sample[1].Sex = 0.0
+            except AttributeError:
+                # This means it was dropped because of the GA
+                pass
             # Embarked
-            if sample[1].Embarked == "C": sample[1].Embarked = 0
-            elif sample[1].Embarked == "S": sample[1].Embarked = 1
-            else: sample[1].Embarked = 2
+            try:
+                if sample[1].Embarked == "C": sample[1].Embarked = 0.0
+                elif sample[1].Embarked == "S": sample[1].Embarked = 1.0
+                else: sample[1].Embarked = 2.0
 
+            except AttributeError:
+                # This means it was dropped because of the GA
+                pass
             # Fare (ignore after the decimal)
-            sample[1].Fare = int(sample[1].Fare)
-            sample[1].Age = int(sample[1].Age)
+            try:
+                fare = float(sample[1].Fare)
+
+            except AttributeError:
+                # This means it was dropped because of the GA
+                pass
+            try:
+                sample[1].Age = float(sample[1].Age)
+            except AttributeError:
+                # This means it was dropped because of the GA
+                pass
 
             out.append(sample[1].values)
 
