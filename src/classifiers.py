@@ -48,6 +48,7 @@ def random_forest():
 
     print "Training..."
     forest = RandomForestClassifier(n_estimators=1000,
+                                    n_jobs=-1,
                                     criterion="entropy")
 
     inputs = train_data[0::,1::]
