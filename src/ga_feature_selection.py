@@ -103,10 +103,12 @@ class FeatureSelector(object):
                                     "Ticket",
                                     "Cabin"
                                ], axis=1)
-
+        inputs_to_drop = []
         for i in range(len(individual)):
             if individual[i] == 0:
-                inputs.drop(get_feature_name(i))
+                inputs_to_drop.append(get_feature_name(i))
+
+        inputs.drop(inputs_to_drop)
 
         inputs = normalise_data(inputs)
 
