@@ -50,7 +50,7 @@ def random_forest():
     forest = RandomForestClassifier(n_estimators=1000,
                                     n_jobs=-1,
                                     criterion="entropy")
-
+    from ipdb import set_trace; set_trace()
     inputs = train_data[0::,1::]
     expected_outputs = train_data[0::,0]
     forest = forest.fit(inputs, expected_outputs)

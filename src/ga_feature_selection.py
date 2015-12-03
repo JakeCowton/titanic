@@ -1,7 +1,7 @@
 import numpy as np
 from deap import creator, base, tools, algorithms
 from utils import get_training_data, get_evaluation_data,\
-                  get_testing_data, calculate_accuracy
+                  get_testing_data, calculate_accuracy, normalise_data
 from nn_manager import create_nn, call_nn
 import fuckit
 
@@ -117,7 +117,7 @@ class FeatureSelector(object):
 
         inputs = inputs.drop(inputs_to_drop, axis=1)
 
-        inputs = self.normalise_data(inputs)
+        inputs = normalise_data(inputs)
 
         nn_data = np.zeros(len(raw_data),
                            dtype=[('inputs',  int, len(inputs[0])),
@@ -143,71 +143,9 @@ class FeatureSelector(object):
 
         inputs = inputs.drop(inputs_to_drop, axis=1)
 
-        inputs = self.normalise_data(inputs)
+        inputs = normalise_data(inputs)
 
         return inputs
-
-    def normalise_data(self, data):
-        out = []
-
-        try:
-            data["Age"] = data["Age"].fillna(data["Age"].median())
-        except KeyError:
-            # This means it was dropped because of the GA
-            pass
-
-        for sample in data.iterrows():
-            # Sex
-            try:
-                if sample[1].Sex == "male": sample[1].Sex = 1.0
-                else: sample[1].Sex = 0.0
-            except AttributeError:
-                # This means it was dropped because of the GA
-                pass
-            # Embarked
-            try:
-                if sample[1].Embarked == "C": sample[1].Embarked = 0.0
-                elif sample[1].Embarked == "S": sample[1].Embarked = 1.0
-                else: sample[1].Embarked = 2.0
-
-            except AttributeError:
-                # This means it was dropped because of the GA
-                pass
-            # Fare (ignore after the decimal)
-            try:
-                fare = float(sample[1].Fare)
-
-            except AttributeError:
-                # This means it was dropped because of the GA
-                pass
-            try:
-                sample[1].Age = float(sample[1].Age)
-            except AttributeError:
-                # This means it was dropped because of the GA
-                pass
-
-            # Ignores all errors as some values won't exist as the GA
-            # will remove some
-            with fuckit:
-                # Convert everything to float
-                sample[1].Survived = float(sample[1].Survived)
-                sample[1].Pclass = float(sample[1].Pclass)
-                sample[1].SibSp = float(sample[1].SibSp)
-                sample[1].Parch = float(sample[1].Parch)
-
-                # Normalise
-                # Don't need survived as is already between 1 and 0
-                sample[1].Pclass /= float(data.Pclass.max())
-                sample[1].PclassSex /= float(data.Sex.max())
-                sample[1].Age /= float(data.Age.max())
-                sample[1].SibSp /= float(data.SibSp.max())
-                sample[1].Parch /= float(data.Parch.max())
-                sample[1].Fare /= float(data.Fare.max())
-                sample[1].Embarked /= float(data.Pclass.max())
-
-            out.append(sample[1].values)
-
-        return out
 
     def calculate(self):
         pop = self.toolbox.population(n=300)
