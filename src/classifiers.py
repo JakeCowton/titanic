@@ -273,3 +273,48 @@ def ga_mlp():
     print "--- Done ---"
 
     return True
+
+def ga_rfc():
+    train_df = get_training_data()
+    eval_df = get_evaluation_data()
+    test_df = get_testing_data()
+    all_train_df = get_all_training_data()
+
+    ids = test_df.PassengerId.values
+
+    ga = FeatureSelector()
+    features = ga.calculate()
+
+    train_data = ga.massage_data_with_outputs(train_df, features)
+    eval_data = ga.massage_data_with_outputs(eval_df, features)
+    test_data = ga.massage_data_without_outputs(test_df, features)
+
+    no_of_inputs = features.count(1)
+    nn = create_nn(train_data, (no_of_inputs, 3, 1))
+
+    evaluation = []
+    for sample in eval_data:
+        out = call_nn(nn, sample[0])
+        if out >= 0.5:
+            evaluation.append(1)
+        else:
+            evaluation.append(0)
+
+    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+
+    all_train_df = get_all_training_data()
+    all_train_data = ga.massage_data_with_outputs(all_train_df, features)
+    nn = create_nn(all_train_data, (no_of_inputs, 3, 1))
+
+    inputs = all_train_data[0::,1::]
+    expected_outputs = all_train_data[0::,0]
+    forest = forest.fit(inputs, expected_outputs)
+
+    output = forest.predict(test_data)
+
+    print "Writing results..."
+    write_results("ga_rfc.csv", ids, output)
+
+    print "--- Done ---"
+
+    return True
