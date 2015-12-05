@@ -62,66 +62,48 @@ def calculate_accuracy(output):
         if output[i] == eval_data[i]:
             correct += 1
 
-    return correct / 90.0 # Number of eval samples
+    return correct / float(len(output)) # Number of eval samples
 
 def normalise_data(data):
-        out = []
 
         try:
+            # Replace missing ages with the median age
             data["Age"] = data["Age"].fillna(data["Age"].median())
         except KeyError:
             # This means it was dropped because of the GA
             pass
 
-        for sample in data.iterrows():
-            # Sex
-            try:
-                if sample[1].Sex == "male": sample[1].Sex = 1.0
-                else: sample[1].Sex = 0.0
-            except AttributeError:
-                # This means it was dropped because of the GA
-                pass
-            # Embarked
-            try:
-                if sample[1].Embarked == "C": sample[1].Embarked = 0.0
-                elif sample[1].Embarked == "S": sample[1].Embarked = 1.0
-                else: sample[1].Embarked = 2.0
+        try:
+            # Replace NaNs with most frequented point of embarkment
+            data["Embarked"] = data["Embarked"].fillna(data["Embarked"].max())
+        except:
+            # Removed by GA
+            pass
 
-            except AttributeError:
-                # This means it was dropped because of the GA
-                pass
-            # Fare (ignore after the decimal)
-            try:
-                fare = float(sample[1].Fare)
+        try:
+            data["Fare"] = data["Fare"].fillna(data["Fare"].median())
+        except:
+            # Removed by GA
+            pass
 
-            except AttributeError:
-                # This means it was dropped because of the GA
-                pass
-            try:
-                sample[1].Age = float(sample[1].Age)
-            except AttributeError:
-                # This means it was dropped because of the GA
-                pass
+        # Sex
+        try:
+            data.loc[data["Sex"] == "female", "Sex"] = 0.0
+            data.loc[data["Sex"] == "male", "Sex"] = 1.0
+        except AttributeError:
+            # This means it was dropped because of the GA
+            pass
 
-            # Ignores all errors as some values won't exist as the GA
-            # will remove some
-            with fuckit:
-                # Convert everything to float
-                sample[1].Survived = float(sample[1].Survived)
-                sample[1].Pclass = float(sample[1].Pclass)
-                sample[1].SibSp = float(sample[1].SibSp)
-                sample[1].Parch = float(sample[1].Parch)
+        # Embarked
+        try:
+            data.loc[data["Embarked"] == "C", "Embarked"] = 0.0
+            data.loc[data["Embarked"] == "S", "Embarked"] = 1.0
+            data.loc[data["Embarked"] == "Q", "Embarked"] = 2.0
 
-                # Normalise
-                # Don't need survived as is already between 1 and 0
-                sample[1].Pclass /= float(data.Pclass.max())
-                sample[1].PclassSex /= float(data.Sex.max())
-                sample[1].Age /= float(data.Age.max())
-                sample[1].SibSp /= float(data.SibSp.max())
-                sample[1].Parch /= float(data.Parch.max())
-                sample[1].Fare /= float(data.Fare.max())
-                sample[1].Embarked /= float(data.Pclass.max())
+        except AttributeError:
+            # This means it was dropped because of the GA
+            pass
 
-            out.append(sample[1].values)
+        normalised_data = (data - data.mean()) / (data.max() - data.min())
 
-        return out
+        return normalised_data
