@@ -2,7 +2,8 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from utils import write_results, get_training_data,\
                   get_evaluation_data, get_testing_data,\
-                  calculate_accuracy, get_all_training_data
+                  calculate_accuracy, get_all_training_data,\
+                  normalise_data
 from slp import create_slp
 from nn_manager import create_nn, call_nn
 from ga_feature_selection import FeatureSelector
@@ -25,64 +26,41 @@ def random_forest():
 
     print "Massaging data..."
 
-    # Drop all but class and survived
-    train_df = train_df.drop(["PassengerId",
-                              "Name", "Sex", "Age", "SibSp", "Parch",
-                              "Ticket", "Fare", "Cabin", "Embarked"],
+    expected_training_outputs = train_df.Survived.values
+    train_df = train_df.drop(["PassengerId", "Survived", "Name",
+                              "Ticket", "Cabin"],
                               axis=1)
-    # Drop all but class
-    eval_df = eval_df.drop(["PassengerId", "Survived",
-                            "Name", "Sex", "Age", "SibSp", "Parch",
-                            "Ticket", "Fare", "Cabin", "Embarked"],
+
+    expected_eval_outputs = eval_df.Survived.values
+    eval_df = eval_df.drop(["PassengerId", "Survived", "Name",\
+                            "Ticket", "Cabin"],
                             axis=1)
 
     # Drop all but class
-    test_df = test_df.drop(["PassengerId",
-                             "Name", "Sex", "Age", "SibSp", "Parch",
-                             "Ticket", "Fare", "Cabin", "Embarked"],
+    test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
                              axis=1)
 
-    train_data = train_df.values
-    eval_data = eval_df.values
-    test_data = test_df.values
+    train_data = normalise_data(train_df).values
+    eval_data = normalise_data(eval_df).values
+    test_data = normalise_data(test_df).values
 
     print "Training... (using entropy)"
     forest = RandomForestClassifier(n_estimators=1000,
                                     n_jobs=-1,
                                     criterion="entropy")
-    from ipdb import set_trace; set_trace()
-    inputs = train_data[0::,1::]
-    expected_outputs = train_data[0::,0]
-    forest = forest.fit(inputs, expected_outputs)
 
-    print "Predicting..."
+    forest = forest.fit(train_data, expected_training_outputs)
+
+    print "Evaluating..."
     evaluation = forest.predict(eval_data)
 
     print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
 
+    print "Predicting..."
     output = forest.predict(test_data)
 
     print "Writing results..."
     write_results("rand_forest_entropy.csv", ids, output)
-
-    print "Training... (using gini)"
-    forest = RandomForestClassifier(n_estimators=1000,
-                                    n_jobs=-1,
-                                    criterion="gini")
-
-    inputs = train_data[0::,1::]
-    expected_outputs = train_data[0::,0]
-    forest = forest.fit(inputs, expected_outputs)
-
-    print "Predicting..."
-    evaluation = forest.predict(eval_data)
-
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
-
-    output = forest.predict(test_data)
-
-    print "Writing results..."
-    write_results("rand_forest_gini.csv", ids, output)
 
     print "--- Done ---"
 
