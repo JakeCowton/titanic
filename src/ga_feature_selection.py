@@ -98,7 +98,7 @@ class FeatureSelector(object):
         print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
 
         # Optional
-        if accuracy > 0.9:
+        if accuracy > 0.8:
             self.early_solution = ind
             raise FoundEarlySolution
 
