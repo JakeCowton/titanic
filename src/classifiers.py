@@ -142,39 +142,37 @@ def mlp():
 
     print "Massaging data..."
 
-    # Drop all but class and survived
-    train_df = train_df.drop(["PassengerId",
-                              "Name", "Sex", "Age", "SibSp", "Parch",
-                              "Ticket", "Fare", "Cabin", "Embarked"],
+    expected_training_outputs = train_df.Survived.values
+    train_df = train_df.drop(["PassengerId", "Survived", "Name",
+                              "Ticket", "Cabin"],
                               axis=1)
-    # Drop all but class
-    eval_df = eval_df.drop(["PassengerId", "Survived",
-                            "Name", "Sex", "Age", "SibSp", "Parch",
-                            "Ticket", "Fare", "Cabin", "Embarked"],
+
+    expected_eval_outputs = eval_df.Survived.values
+    eval_df = eval_df.drop(["PassengerId", "Survived", "Name",\
+                            "Ticket", "Cabin"],
                             axis=1)
 
     # Drop all but class
-    test_df = test_df.drop(["PassengerId",
-                             "Name", "Sex", "Age", "SibSp", "Parch",
-                             "Ticket", "Fare", "Cabin", "Embarked"],
+    test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
                              axis=1)
 
-    train_data = train_df.values
-    eval_data = eval_df.values
-    test_data = test_df.values
+    train_data = normalise_data(train_df).values
+    eval_data = normalise_data(eval_df).values
+    test_data = normalise_data(test_df).values
 
-    data = np.zeros(800, dtype=[('inputs',  int, 1),
-                                ('outputs', int, 1)])
+    no_of_inputs = len(train_data[0])
+
+    data = np.zeros(800, dtype=[('inputs',  float, no_of_inputs),
+                                ('outputs', float, 1)])
 
     for i in range(len(train_data)):
-        data[i]['inputs'] = train_data[i][1]
-        data[i]['outputs'] = train_data[i][0]
+        data[i]['inputs'] = train_data[i]
+        data[i]['outputs'] = expected_training_outputs[i]
 
     print "Training..."
-    nn = create_nn(data, (1,2,1))
+    nn = create_nn(data, (no_of_inputs,3,1))
 
-
-    print "Predicting..."
+    print "Evaluating..."
     evaluation = []
     for sample in eval_data:
         out = call_nn(nn, sample[0])
@@ -184,6 +182,8 @@ def mlp():
             evaluation.append(0)
 
     print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+
+    print "Predicting..."
 
     output = []
     for sample in test_data:
