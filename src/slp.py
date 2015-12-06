@@ -46,13 +46,10 @@ def normalise(data):
         temp_list.append([entry_list, entry[1]])
     return temp_list
 
-def create_slp(data):
-
-    # Normalise the data
-    training_data = normalise(data)
+def create_slp(inputs, outputs):
 
     # Create the perceptron
-    p = Perceptron(len(data[0][0]))
+    p = Perceptron(len(inputs))
 
     # Number of full iterations
     epochs = 0
@@ -66,22 +63,22 @@ def create_slp(data):
         error = 0
 
         # For each set in the training_data
-        for value in training_data:
+        for i in range(len(inputs)):
 
             # Calculate the result
-            output = p.result(value[0])
+            output = p.result(inputs[i])
 
             # Calculate the error
-            iter_error = value[1] - output
+            iter_error = outputs[i] - output
 
             # Add the error to the epoch error
             error += iter_error
 
             # Adjust the weights based on inputs and the error
-            p.weight_adjustment(value[0], iter_error)
+            p.weight_adjustment(inputs[i], iter_error)
 
         # Calculate the MSE - epoch error / number of sets
-        mse = float(error/len(training_data))
+        mse = float(error/len(inputs))
 
         print "The MSE of %d epochs is %.10f" % (epochs, mse)
 

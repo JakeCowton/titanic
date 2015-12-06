@@ -83,42 +83,37 @@ def slp():
 
     print "Massaging data..."
 
-    # Drop all but class and survived
-    train_df = train_df.drop(["PassengerId",
-                              "Name", "Sex", "Age", "SibSp", "Parch",
-                              "Ticket", "Fare", "Cabin", "Embarked"],
+    expected_training_outputs = train_df.Survived.values
+    train_df = train_df.drop(["PassengerId", "Survived", "Name",
+                              "Ticket", "Cabin"],
                               axis=1)
-    # Drop all but class
-    eval_df = eval_df.drop(["PassengerId", "Survived",
-                            "Name", "Sex", "Age", "SibSp", "Parch",
-                            "Ticket", "Fare", "Cabin", "Embarked"],
+
+    expected_eval_outputs = eval_df.Survived.values
+    eval_df = eval_df.drop(["PassengerId", "Survived", "Name",\
+                            "Ticket", "Cabin"],
                             axis=1)
 
     # Drop all but class
-    test_df = test_df.drop(["PassengerId",
-                             "Name", "Sex", "Age", "SibSp", "Parch",
-                             "Ticket", "Fare", "Cabin", "Embarked"],
+    test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
                              axis=1)
 
-    train_data = train_df.values
-    eval_data = eval_df.values
-    test_data = test_df.values
+    train_data = normalise_data(train_df).values
+    eval_data = normalise_data(eval_df).values
+    test_data = normalise_data(test_df).values
 
     print "Training..."
 
-    massaged_train_data = []
-    for sample in train_data:
-        massaged_train_data.append([[sample[1]], sample[0]])
+    perceptron = create_slp(train_data, expected_training_outputs)
 
-    perceptron = create_slp(massaged_train_data)
-
-    print "Predicting..."
+    print "Evaluating..."
 
     evaluation = []
     for sample in eval_data:
         evaluation.append(perceptron.recall(sample))
 
     print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+
+    print "Predicting..."
 
     output = []
     for sample in test_data:
