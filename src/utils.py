@@ -76,13 +76,13 @@ def normalise_data(data):
         try:
             # Replace NaNs with most frequented point of embarkment
             data["Embarked"] = data["Embarked"].fillna(data["Embarked"].max())
-        except:
+        except KeyError:
             # Removed by GA
             pass
 
         try:
             data["Fare"] = data["Fare"].fillna(data["Fare"].median())
-        except:
+        except KeyError:
             # Removed by GA
             pass
 
@@ -90,7 +90,7 @@ def normalise_data(data):
         try:
             data.loc[data["Sex"] == "female", "Sex"] = 0.0
             data.loc[data["Sex"] == "male", "Sex"] = 1.0
-        except AttributeError:
+        except KeyError:
             # This means it was dropped because of the GA
             pass
 
@@ -100,7 +100,7 @@ def normalise_data(data):
             data.loc[data["Embarked"] == "S", "Embarked"] = 1.0
             data.loc[data["Embarked"] == "Q", "Embarked"] = 2.0
 
-        except AttributeError:
+        except KeyError:
             # This means it was dropped because of the GA
             pass
 

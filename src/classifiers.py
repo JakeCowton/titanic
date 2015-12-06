@@ -208,15 +208,24 @@ def ga_mlp():
 
     ids = test_df.PassengerId.values
 
+    print "Selecting feature..."
+
     ga = FeatureSelector()
     features = ga.calculate()
+
+    print "Massaging data..."
 
     train_data = ga.massage_data_with_outputs(train_df, features)
     eval_data = ga.massage_data_with_outputs(eval_df, features)
     test_data = ga.massage_data_without_outputs(test_df, features)
 
     no_of_inputs = features.count(1)
+
+    print "Training..."
+
     nn = create_nn(train_data, (no_of_inputs, 3, 1))
+
+    print "Evaluating..."
 
     evaluation = []
     for sample in eval_data:
@@ -228,9 +237,14 @@ def ga_mlp():
 
     print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
 
+    print "Retraining..."
+
     all_train_df = get_all_training_data()
     all_train_data = ga.massage_data_with_outputs(all_train_df, features)
+
     nn = create_nn(all_train_data, (no_of_inputs, 3, 1))
+
+    print "Predicting..."
 
     output = []
     for sample in test_data:
@@ -241,6 +255,7 @@ def ga_mlp():
             output.append(0)
 
     print "Writing results..."
+
     write_results("ga_mlp.csv", ids, output)
 
     print "--- Done ---"
@@ -255,15 +270,24 @@ def ga_rfc():
 
     ids = test_df.PassengerId.values
 
+    print "Selecting features..."
+
     ga = FeatureSelector()
     features = ga.calculate()
+
+    print "Massaging data..."
 
     train_data = ga.massage_data_with_outputs(train_df, features)
     eval_data = ga.massage_data_with_outputs(eval_df, features)
     test_data = ga.massage_data_without_outputs(test_df, features)
 
     no_of_inputs = features.count(1)
+
+    print "Training..."
+
     nn = create_nn(train_data, (no_of_inputs, 3, 1))
+
+    print "Evaluating..."
 
     evaluation = []
     for sample in eval_data:
@@ -275,6 +299,8 @@ def ga_rfc():
 
     print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
 
+    print "Retraining..."
+
     all_train_df = get_all_training_data()
     all_train_data = ga.massage_data_with_outputs(all_train_df, features)
     nn = create_nn(all_train_data, (no_of_inputs, 3, 1))
@@ -282,6 +308,8 @@ def ga_rfc():
     inputs = all_train_data[0::,1::]
     expected_outputs = all_train_data[0::,0]
     forest = forest.fit(inputs, expected_outputs)
+
+    print "Predicting..."
 
     output = forest.predict(test_data)
 

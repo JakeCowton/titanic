@@ -77,6 +77,10 @@ class FeatureSelector(object):
 
     def evaluate_ind(self, ind):
         no_of_inputs = ind.count(1)
+
+        if no_of_inputs <= 1:
+            return 0.0
+
         test_data = self.massage_data_with_outputs(get_training_data(), ind)
         nn = create_nn(test_data, (no_of_inputs, 3, 1))
 
@@ -117,11 +121,13 @@ class FeatureSelector(object):
 
         inputs = inputs.drop(inputs_to_drop, axis=1)
 
-        inputs = normalise_data(inputs)
+        inputs = normalise_data(inputs).values
+
+        no_of_inputs = len(inputs[0])
 
         nn_data = np.zeros(len(raw_data),
-                           dtype=[('inputs',  int, len(inputs[0])),
-                                  ('outputs', int, 1)])
+                           dtype=[('inputs',  float, no_of_inputs),
+                                  ('outputs', float, 1)])
 
         nn_data['outputs'] = outputs
         nn_data["inputs"] = inputs
@@ -143,7 +149,7 @@ class FeatureSelector(object):
 
         inputs = inputs.drop(inputs_to_drop, axis=1)
 
-        inputs = normalise_data(inputs)
+        inputs = normalise_data(inputs).values
 
         return inputs
 
