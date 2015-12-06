@@ -1,7 +1,6 @@
 # Gives access to the NN
 
 import numpy as np
-from os import system as sys
 from nn import NN
 
 def _train(net, data, epochs, lr, momentum):
