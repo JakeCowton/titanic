@@ -41,28 +41,21 @@ def get_testing_data():
     test_df = pd.read_csv("../data/test.csv", header=0)
     return test_df
 
-def calculate_accuracy(output):
+def calculate_accuracy(classified_outs, actual_outs):
     """
     E.g. output[x] = 0
     Should be 90 in length
     """
-    if len(output) != 90:
-        raise IndexError("Output should be 90, not %d" % len(output))
-
-    eval_df = get_evaluation_data()
-    eval_df = eval_df.drop(["PassengerId", "Pclass",
-                  "Name", "Sex", "Age", "SibSp", "Parch",
-                  "Ticket", "Fare", "Cabin", "Embarked"],
-                  axis=1)
-    eval_data = eval_df.values[0::,0]
+    if len(classified_outs) != 90:
+        raise IndexError("Output should be 90, not %d" % len(classified_outs))
 
     correct = 0
 
-    for i in range(len(output)):
-        if output[i] == eval_data[i]:
+    for i in range(len(classified_outs)):
+        if classified_outs[i] == actual_outs[i]:
             correct += 1
 
-    return correct / float(len(output)) # Number of eval samples
+    return correct / float(len(classified_outs)) # Number of eval samples
 
 def normalise_data(data):
 

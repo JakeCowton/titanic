@@ -84,6 +84,7 @@ class MLPFeatureSelector(object):
         test_data = self.massage_data_with_outputs(get_training_data(), ind)
         nn = create_nn(test_data, (no_of_inputs, 3, 1))
 
+        expected_eval_outputs = get_evaluation_data().Survived.values
         eval_data = self.massage_data_with_outputs(get_evaluation_data(), ind)
 
         evaluation = []
@@ -94,8 +95,8 @@ class MLPFeatureSelector(object):
             else:
                 evaluation.append(0)
 
-        accuracy = calculate_accuracy(evaluation)
-        print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+        accuracy = calculate_accuracy(evaluation, expected_eval_outputs)
+        print "Accuracy: {:10.4f}".format(accuracy)
 
         # Optional
         if accuracy > 0.8:

@@ -87,6 +87,7 @@ class RFCFeatureSelector(object):
 
         forest.fit(train_data, expected_outputs)
 
+        expected_eval_outputs = get_evaluation_data().Survived.values
         eval_data = self.massage_data_with_outputs(get_evaluation_data(), ind)
 
         forest = RandomForestClassifier(n_estimators=1000,
@@ -95,13 +96,10 @@ class RFCFeatureSelector(object):
 
         forest = forest.fit(train_data, expected_outputs)
 
-        print "Predicting..."
         evaluation = forest.predict(eval_data)
 
-        print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
-
-        accuracy = calculate_accuracy(evaluation)
-        print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+        accuracy = calculate_accuracy(evaluation, expected_eval_outputs)
+        print "Accuracy: {:10.4f}".format(accuracy)
 
         # Optional
         if accuracy > 0.8:

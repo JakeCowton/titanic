@@ -27,12 +27,10 @@ def random_forest():
 
     print "Massaging data..."
 
-    expected_training_outputs = train_df.Survived.values
     train_df = train_df.drop(["PassengerId", "Survived", "Name",
                               "Ticket", "Cabin"],
                               axis=1)
 
-    expected_eval_outputs = eval_df.Survived.values
     eval_df = eval_df.drop(["PassengerId", "Survived", "Name",\
                             "Ticket", "Cabin"],
                             axis=1)
@@ -41,8 +39,12 @@ def random_forest():
     test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
                              axis=1)
 
+    expected_training_outputs = train_df.Survived.values
     train_data = normalise_data(train_df).values
+
+    expected_eval_outputs = eval_df.Survived.values
     eval_data = normalise_data(eval_df).values
+
     test_data = normalise_data(test_df).values
 
     print "Training... (using entropy)"
@@ -55,7 +57,8 @@ def random_forest():
     print "Evaluating..."
     evaluation = forest.predict(eval_data)
 
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
+                                                         expected_eval_outputs))
 
     print "Predicting..."
     output = forest.predict(test_data)
@@ -73,7 +76,8 @@ def random_forest():
     print "Evaluating..."
     evaluation = forest.predict(eval_data)
 
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
+                                                         expected_eval_outputs))
 
     print "Predicting..."
     output = forest.predict(test_data)
@@ -103,7 +107,6 @@ def slp():
 
     print "Massaging data..."
 
-    expected_training_outputs = train_df.Survived.values
     train_df = train_df.drop(["PassengerId", "Survived", "Name",
                               "Ticket", "Cabin"],
                               axis=1)
@@ -117,8 +120,12 @@ def slp():
     test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
                              axis=1)
 
+    expected_training_outputs = train_df.Survived.values
     train_data = normalise_data(train_df).values
+
+    expected_eval_outputs = eval_df.Survived.values
     eval_data = normalise_data(eval_df).values
+
     test_data = normalise_data(test_df).values
 
     print "Training..."
@@ -131,7 +138,8 @@ def slp():
     for sample in eval_data:
         evaluation.append(perceptron.recall(sample))
 
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
+                                                         expected_eval_outputs))
 
     print "Predicting..."
 
@@ -176,8 +184,12 @@ def mlp():
     test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
                              axis=1)
 
+    expected_training_outputs = train_df.Survived.values
     train_data = normalise_data(train_df).values
+
+    expected_eval_outputs = train_df.Survived.values
     eval_data = normalise_data(eval_df).values
+
     test_data = normalise_data(test_df).values
 
     no_of_inputs = len(train_data[0])
@@ -201,7 +213,8 @@ def mlp():
         else:
             evaluation.append(0)
 
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
+                                                         expected_eval_outputs))
 
     print "Predicting..."
 
@@ -235,8 +248,12 @@ def ga_mlp():
 
     print "Massaging data..."
 
+    expected_training_outputs = train_df.Survived.values
     train_data = ga.massage_data_with_outputs(train_df, features)
+
+    expected_eval_outputs = eval_df.Survived.values
     eval_data = ga.massage_data_with_outputs(eval_df, features)
+
     test_data = ga.massage_data_without_outputs(test_df, features)
 
     no_of_inputs = features.count(1)
@@ -255,7 +272,8 @@ def ga_mlp():
         else:
             evaluation.append(0)
 
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
+                                                         expected_eval_outputs))
 
     print "Retraining..."
 
@@ -320,7 +338,8 @@ def ga_rfc():
 
     evaluation = forest.predict(eval_data)
 
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
+                                                         expected_eval_outputs))
 
     print "Retraining..."
 
