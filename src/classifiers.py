@@ -62,6 +62,25 @@ def random_forest():
     print "Writing results..."
     write_results("rand_forest_entropy.csv", ids, output)
 
+    print "Training... (using gini)"
+    forest = RandomForestClassifier(n_estimators=1000,
+                                    n_jobs=-1,
+                                    criterion="gini")
+
+    forest = forest.fit(train_data, expected_training_outputs)
+
+    print "Evaluating..."
+    evaluation = forest.predict(eval_data)
+
+    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
+
+    print "Predicting..."
+    output = forest.predict(test_data)
+
+    print "Writing results..."
+    write_results("rand_forest_gini.csv", ids, output)
+
+
     print "--- Done ---"
 
     return True
