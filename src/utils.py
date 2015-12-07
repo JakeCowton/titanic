@@ -55,7 +55,9 @@ def calculate_accuracy(classified_outs, actual_outs):
         if classified_outs[i] == actual_outs[i]:
             correct += 1
 
-    return correct / float(len(classified_outs)) # Number of eval samples
+    accuracy = correct / float(len(classified_outs)) # Number of eval samples
+
+    print "Accuracy: {:10.4f}".format(accuracy)
 
 def normalise_data(data):
 

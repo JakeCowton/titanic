@@ -50,8 +50,7 @@ def random_forest():
     print "Evaluating..."
     evaluation = forest.predict(eval_data)
 
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
-                                                         expected_eval_outputs))
+    calculate_accuracy(evaluation, expected_eval_outputs)
 
     print "Predicting..."
     output = forest.predict(test_data)
@@ -69,8 +68,7 @@ def random_forest():
     print "Evaluating..."
     evaluation = forest.predict(eval_data)
 
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
-                                                         expected_eval_outputs))
+    calculate_accuracy(evaluation, expected_eval_outputs)
 
     print "Predicting..."
     output = forest.predict(test_data)
@@ -124,8 +122,7 @@ def slp():
     for sample in eval_data:
         evaluation.append(perceptron.recall(sample))
 
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
-                                                         expected_eval_outputs))
+    calculate_accuracy(evaluation, expected_eval_outputs)
 
     print "Predicting..."
 
@@ -190,8 +187,7 @@ def mlp():
         else:
             evaluation.append(0)
 
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
-                                                         expected_eval_outputs))
+    calculate_accuracy(evaluation, expected_eval_outputs)
 
     print "Predicting..."
 
