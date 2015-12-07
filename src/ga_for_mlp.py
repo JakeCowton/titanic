@@ -6,7 +6,7 @@ from nn_manager import create_nn, call_nn
 import fuckit
 
 
-class FeatureSelector(object):
+class MLPFeatureSelector(object):
 
     def __init__(self):
         creator.create("FitnessMulti", base.Fitness, weights=(1.,))

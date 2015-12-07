@@ -6,7 +6,7 @@ from utils import write_results, get_training_data,\
                   normalise_data
 from slp import create_slp
 from nn_manager import create_nn, call_nn
-from ga_feature_selection import FeatureSelector
+from ga_for_mlp import MLPFeatureSelector
 
 
 def random_forest():
