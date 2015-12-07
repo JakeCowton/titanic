@@ -221,7 +221,7 @@ def ga_mlp():
 
     ids = test_df.PassengerId.values
 
-    print "Selecting feature..."
+    print "Selecting features..."
 
     ga = MLPFeatureSelector()
     features = ga.calculate()
