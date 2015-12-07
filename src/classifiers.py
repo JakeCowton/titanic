@@ -7,6 +7,7 @@ from utils import write_results, get_training_data,\
 from slp import create_slp
 from nn_manager import create_nn, call_nn
 from ga_for_mlp import MLPFeatureSelector
+from ga_for_rfc import RFCFeatureSelector
 
 
 def random_forest():
@@ -229,7 +230,7 @@ def ga_mlp():
 
     print "Selecting feature..."
 
-    ga = FeatureSelector()
+    ga = MLPFeatureSelector()
     features = ga.calculate()
 
     print "Massaging data..."
@@ -291,42 +292,43 @@ def ga_rfc():
 
     print "Selecting features..."
 
-    ga = FeatureSelector()
+    ga = RFCFeatureSelector()
     features = ga.calculate()
 
     print "Massaging data..."
-
+    expected_training_outputs = train_df.Survived.values
     train_data = ga.massage_data_with_outputs(train_df, features)
+
+    expected_eval_outputs = eval_df.Survived.values
     eval_data = ga.massage_data_with_outputs(eval_df, features)
+
     test_data = ga.massage_data_without_outputs(test_df, features)
+
+    all_expected_outputs = all_train_df.Survived.values
+    all_train_data = ga.massage_data_with_outputs(all_train_df, features)
 
     no_of_inputs = features.count(1)
 
     print "Training..."
 
-    nn = create_nn(train_data, (no_of_inputs, 3, 1))
+    forest = RandomForestClassifier(n_estimators=1000,
+                                    n_jobs=-1,
+                                    criterion="entropy")
+    forest = forest.fit(train_data, expected_training_outputs)
 
     print "Evaluating..."
 
-    evaluation = []
-    for sample in eval_data:
-        out = call_nn(nn, sample[0])
-        if out >= 0.5:
-            evaluation.append(1)
-        else:
-            evaluation.append(0)
+    evaluation = forest.predict(eval_data)
 
     print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
 
     print "Retraining..."
 
-    all_train_df = get_all_training_data()
-    all_train_data = ga.massage_data_with_outputs(all_train_df, features)
-    nn = create_nn(all_train_data, (no_of_inputs, 3, 1))
+    forest = RandomForestClassifier(n_estimators=1000,
+                                    n_jobs=-1,
+                                    criterion="entropy")
 
-    inputs = all_train_data[0::,1::]
-    expected_outputs = all_train_data[0::,0]
-    forest = forest.fit(inputs, expected_outputs)
+    forest = forest.fit(all_train_data, all_expected_outputs)
 
     print "Predicting..."
 

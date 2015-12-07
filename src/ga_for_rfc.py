@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.ensemble import RandomForestClassifier
 from deap import creator, base, tools, algorithms
 from utils import get_training_data, get_evaluation_data,\
                   get_testing_data, calculate_accuracy, normalise_data
@@ -6,7 +7,7 @@ from nn_manager import create_nn, call_nn
 import fuckit
 
 
-class FeatureSelector(object):
+class RFCFeatureSelector(object):
 
     def __init__(self):
         creator.create("FitnessMulti", base.Fitness, weights=(1.,))
@@ -77,18 +78,22 @@ class FeatureSelector(object):
 
     def evaluate_ind(self, ind):
         no_of_inputs = ind.count(1)
-        test_data = self.massage_data_with_outputs(get_training_data(), ind)
-        nn = create_nn(test_data, (no_of_inputs, 3, 1))
+        expected_outputs = get_training_data().Survived.values
+        train_data = self.massage_data_with_outputs(get_training_data(), ind)
+
+        forest = RandomForestClassifier(n_estimators=1000,
+                                        n_jobs=-1,
+                                        criterion="entropy")
+
+        forest.fit(train_data, expected_outputs)
 
         eval_data = self.massage_data_with_outputs(get_evaluation_data(), ind)
 
         forest = RandomForestClassifier(n_estimators=1000,
-                                    n_jobs=-1,
-                                    criterion="entropy")
+                                        n_jobs=-1,
+                                        criterion="entropy")
 
-        inputs = train_data[0::,1::]
-        expected_outputs = train_data[0::,0]
-        forest = forest.fit(inputs, expected_outputs)
+        forest = forest.fit(train_data, expected_outputs)
 
         print "Predicting..."
         evaluation = forest.predict(eval_data)
@@ -99,15 +104,13 @@ class FeatureSelector(object):
         print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation))
 
         # Optional
-        if accuracy > 0.9:
+        if accuracy > 0.8:
             self.early_solution = ind
             raise FoundEarlySolution
 
         return accuracy
 
     def massage_data_with_outputs(self, raw_data, individual):
-        outputs = raw_data.Survived.values
-
         inputs = raw_data.drop([
                                     "Survived",
                                     "PassengerId",
@@ -122,16 +125,9 @@ class FeatureSelector(object):
 
         inputs = inputs.drop(inputs_to_drop, axis=1)
 
-        inputs = normalise_data(inputs)
+        inputs = normalise_data(inputs).values
 
-        nn_data = np.zeros(len(raw_data),
-                           dtype=[('inputs',  int, len(inputs[0])),
-                                  ('outputs', int, 1)])
-
-        nn_data['outputs'] = outputs
-        nn_data["inputs"] = inputs
-
-        return nn_data
+        return inputs
 
     def massage_data_without_outputs(self, raw_data, individual):
         inputs = raw_data.drop([
@@ -148,7 +144,7 @@ class FeatureSelector(object):
 
         inputs = inputs.drop(inputs_to_drop, axis=1)
 
-        inputs = normalise_data(inputs)
+        inputs = normalise_data(inputs).values
 
         return inputs
 
