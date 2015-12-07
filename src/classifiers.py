@@ -293,9 +293,6 @@ def ga_rfc():
 
     no_of_inputs = features.count(1)
 
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
-                                                         expected_eval_outputs))
-
     print "Retraining..."
 
     forest = RandomForestClassifier(n_estimators=1000,
