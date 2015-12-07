@@ -11,13 +11,8 @@ from ga_for_rfc import RFCFeatureSelector
 
 
 def random_forest():
-    """
-    A random forest classifier
-    Inputs: Pclass
-    Outputs: Survived
-    """
 
-    print "Random Forest Classifier"
+    print "--- Random Forest Classifier ---"
 
     train_df = get_training_data()
     eval_df = get_evaluation_data()
@@ -27,10 +22,12 @@ def random_forest():
 
     print "Massaging data..."
 
+    expected_training_outputs = train_df.Survived.values
     train_df = train_df.drop(["PassengerId", "Survived", "Name",
                               "Ticket", "Cabin"],
                               axis=1)
 
+    expected_eval_outputs = eval_df.Survived.values
     eval_df = eval_df.drop(["PassengerId", "Survived", "Name",\
                             "Ticket", "Cabin"],
                             axis=1)
@@ -39,12 +36,8 @@ def random_forest():
     test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
                              axis=1)
 
-    expected_training_outputs = train_df.Survived.values
     train_data = normalise_data(train_df).values
-
-    expected_eval_outputs = eval_df.Survived.values
     eval_data = normalise_data(eval_df).values
-
     test_data = normalise_data(test_df).values
 
     print "Training... (using entropy)"
@@ -86,18 +79,13 @@ def random_forest():
     write_results("rand_forest_gini.csv", ids, output)
 
 
-    print "--- Done ---"
+    print "Done"
 
     return True
 
 def slp():
-    """
-    A single layer perceptron
-    Inputs: Pclass
-    Outputs: Survived
-    """
 
-    print "SLP"
+    print "--- SLP ---"
 
     train_df = get_training_data()
     eval_df = get_evaluation_data()
@@ -107,6 +95,7 @@ def slp():
 
     print "Massaging data..."
 
+    expected_training_outputs = train_df.Survived.values
     train_df = train_df.drop(["PassengerId", "Survived", "Name",
                               "Ticket", "Cabin"],
                               axis=1)
@@ -120,12 +109,9 @@ def slp():
     test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
                              axis=1)
 
-    expected_training_outputs = train_df.Survived.values
+
     train_data = normalise_data(train_df).values
-
-    expected_eval_outputs = eval_df.Survived.values
     eval_data = normalise_data(eval_df).values
-
     test_data = normalise_data(test_df).values
 
     print "Training..."
@@ -150,17 +136,12 @@ def slp():
     print "Writing results..."
     write_results("slp.csv", ids, output)
 
-    print "--- Done ---"
+    print "Done"
 
     return True
 
 def mlp():
-    """
-    Multi-layer perceptron
-    Inputs: Pclass
-    Outputs: Survived
-    """
-    print "MLP"
+    print "--- MLP ---"
 
     train_df = get_training_data()
     eval_df = get_evaluation_data()
@@ -184,12 +165,8 @@ def mlp():
     test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
                              axis=1)
 
-    expected_training_outputs = train_df.Survived.values
     train_data = normalise_data(train_df).values
-
-    expected_eval_outputs = train_df.Survived.values
     eval_data = normalise_data(eval_df).values
-
     test_data = normalise_data(test_df).values
 
     no_of_inputs = len(train_data[0])
@@ -229,11 +206,14 @@ def mlp():
     print "Writing results..."
     write_results("mlp.csv", ids, output)
 
-    print "--- Done ---"
+    print "Done"
 
     return True
 
 def ga_mlp():
+
+    print "--- GA & MLP ---"
+
     train_df = get_training_data()
     eval_df = get_evaluation_data()
     test_df = get_testing_data()
@@ -258,23 +238,6 @@ def ga_mlp():
 
     no_of_inputs = features.count(1)
 
-    print "Training..."
-
-    nn = create_nn(train_data, (no_of_inputs, 3, 1))
-
-    print "Evaluating..."
-
-    evaluation = []
-    for sample in eval_data:
-        out = call_nn(nn, sample[0])
-        if out >= 0.5:
-            evaluation.append(1)
-        else:
-            evaluation.append(0)
-
-    print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
-                                                         expected_eval_outputs))
-
     print "Retraining..."
 
     all_train_df = get_all_training_data()
@@ -296,11 +259,14 @@ def ga_mlp():
 
     write_results("ga_mlp.csv", ids, output)
 
-    print "--- Done ---"
+    print "Done"
 
     return True
 
 def ga_rfc():
+
+    print "--- GA & RFC ---"
+
     train_df = get_training_data()
     eval_df = get_evaluation_data()
     test_df = get_testing_data()
@@ -327,17 +293,6 @@ def ga_rfc():
 
     no_of_inputs = features.count(1)
 
-    print "Training..."
-
-    forest = RandomForestClassifier(n_estimators=1000,
-                                    n_jobs=-1,
-                                    criterion="entropy")
-    forest = forest.fit(train_data, expected_training_outputs)
-
-    print "Evaluating..."
-
-    evaluation = forest.predict(eval_data)
-
     print "Accuracy: {:10.4f}".format(calculate_accuracy(evaluation,
                                                          expected_eval_outputs))
 
@@ -356,6 +311,6 @@ def ga_rfc():
     print "Writing results..."
     write_results("ga_rfc.csv", ids, output)
 
-    print "--- Done ---"
+    print "Done"
 
     return True
