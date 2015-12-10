@@ -1,20 +1,21 @@
+from sklearn.metrics import accuracy_score, precision_score,\
+                            recall_score, f1_score
 
-def calculate_accuracy(classified_outs, actual_outs):
-    """
-    E.g. output[x] = 0
-    Should be 90 in length
-    """
-    if len(classified_outs) != 90:
-        raise IndexError("Output should be 90, not %d" % len(classified_outs))
 
-    correct = 0
+class EvaluationMetrics(object):
 
-    for i in range(len(classified_outs)):
-        if classified_outs[i] == actual_outs[i]:
-            correct += 1
+    def __init__(self, predicted, actual):
+        self.predicted = predicted
+        self.actual = actual
 
-    accuracy = correct / float(len(classified_outs)) # Number of eval samples
+    def calculate_accuracy(self):
+        return accuracy_score(self.actual, self.predicted)
 
-    print "Accuracy: {:10.4f}".format(accuracy)
+    def calculate_precision(self):
+        return precision_score(self.actual, self.predicted)
 
-    return accuracy
+    def calculate_recall(self):
+        return recall_score(self.actual, self.predicted)
+
+    def calculate_f1(self):
+        return f1_score(self.actual, self.predicted)

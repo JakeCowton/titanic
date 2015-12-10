@@ -3,7 +3,7 @@ from sklearn.ensemble import RandomForestClassifier
 from utils import write_results, get_training_data,\
                   get_evaluation_data, get_testing_data,\
                   get_all_training_data, normalise_data
-from evaluation import calculate_accuracy
+from evaluation import EvaluationMetrics
 from slp import create_slp
 from nn_manager import create_nn, call_nn
 from ga_for_mlp import MLPFeatureSelector
@@ -50,7 +50,10 @@ def random_forest():
     print "Evaluating..."
     evaluation = forest.predict(eval_data)
 
-    calculate_accuracy(evaluation, expected_eval_outputs)
+    em = EvaluationMetrics(evaluation, expected_eval_outputs)
+    print "Accuracy: " + str(em.calculate_accuracy())
+    print "Precision:" + str(em.calculate_precision())
+    print "F1 measure:" + str(em.calculate_f1())
 
     print "Predicting..."
     output = forest.predict(test_data)
@@ -68,7 +71,10 @@ def random_forest():
     print "Evaluating..."
     evaluation = forest.predict(eval_data)
 
-    calculate_accuracy(evaluation, expected_eval_outputs)
+    em = EvaluationMetrics(evaluation, expected_eval_outputs)
+    print "Accuracy: " + str(em.calculate_accuracy())
+    print "Precision:" + str(em.calculate_precision())
+    print "F1 measure:" + str(em.calculate_f1())
 
     print "Predicting..."
     output = forest.predict(test_data)
@@ -122,7 +128,10 @@ def slp():
     for sample in eval_data:
         evaluation.append(perceptron.recall(sample))
 
-    calculate_accuracy(evaluation, expected_eval_outputs)
+    em = EvaluationMetrics(evaluation, expected_eval_outputs)
+    print "Accuracy: " + str(em.calculate_accuracy())
+    print "Precision:" + str(em.calculate_precision())
+    print "F1 measure:" + str(em.calculate_f1())
 
     print "Predicting..."
 
@@ -187,7 +196,10 @@ def mlp():
         else:
             evaluation.append(0)
 
-    calculate_accuracy(evaluation, expected_eval_outputs)
+    em = EvaluationMetrics(evaluation, expected_eval_outputs)
+    print "Accuracy: " + str(em.calculate_accuracy())
+    print "Precision:" + str(em.calculate_precision())
+    print "F1 measure:" + str(em.calculate_f1())
 
     print "Predicting..."
 

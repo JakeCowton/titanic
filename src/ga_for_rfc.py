@@ -3,7 +3,7 @@ from sklearn.ensemble import RandomForestClassifier
 from deap import creator, base, tools, algorithms
 from utils import get_training_data, get_evaluation_data,\
                   get_testing_data, normalise_data
-from evaluation import calculate_accuracy
+from evaluation import EvaluationMetrics
 from nn_manager import create_nn, call_nn
 import fuckit
 
@@ -101,12 +101,15 @@ class RFCFeatureSelector(object):
 
         accuracy = calculate_accuracy(evaluation, expected_eval_outputs)
 
+        em = EvaluationMetrics(evaluation, expected_eval_outputs)
+        f1 = em.calculate_f1()
+
         # Optional
-        if accuracy > 0.8:
+        if f1 > 0.8:
             self.early_solution = ind
             raise FoundEarlySolution
 
-        return accuracy
+        return f1
 
     def massage_data_with_outputs(self, raw_data, individual):
         inputs = raw_data.drop([
