@@ -1,7 +1,8 @@
 import numpy as np
 from deap import creator, base, tools, algorithms
 from utils import get_training_data, get_evaluation_data,\
-                  get_testing_data, calculate_accuracy, normalise_data
+                  get_testing_data, normalise_data
+from evaluation import calculate_accuracy
 from nn_manager import create_nn, call_nn
 import fuckit
 

@@ -2,8 +2,8 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from utils import write_results, get_training_data,\
                   get_evaluation_data, get_testing_data,\
-                  calculate_accuracy, get_all_training_data,\
-                  normalise_data
+                  get_all_training_data, normalise_data
+from evaluation import calculate_accuracy
 from slp import create_slp
 from nn_manager import create_nn, call_nn
 from ga_for_mlp import MLPFeatureSelector
@@ -41,7 +41,7 @@ def random_forest():
     test_data = normalise_data(test_df).values
 
     print "Training... (using entropy)"
-    forest = RandomForestClassifier(n_estimators=1000,
+    forest = RandomForestClassifier(n_estimators=200,
                                     n_jobs=-1,
                                     criterion="entropy")
 
@@ -59,7 +59,7 @@ def random_forest():
     write_results("rand_forest_entropy.csv", ids, output)
 
     print "Training... (using gini)"
-    forest = RandomForestClassifier(n_estimators=1000,
+    forest = RandomForestClassifier(n_estimators=200,
                                     n_jobs=-1,
                                     criterion="gini")
 
