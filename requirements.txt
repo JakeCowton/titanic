@@ -9,7 +9,6 @@ pytz==2015.7
 pyzmq==15.1.0
 scikit-learn==0.17
 scipy==0.16.1
-scoop==0.7.1.1
 six==1.10.0
 sklearn==0.0
 wsgiref==0.1.2
