@@ -95,7 +95,7 @@ class MLPFeatureSelector(object):
             else:
                 evaluation.append(0)
 
-        calculate_accuracy(evaluation, expected_eval_outputs)
+        accuracy = calculate_accuracy(evaluation, expected_eval_outputs)
 
         # Optional
         if accuracy > 0.8:

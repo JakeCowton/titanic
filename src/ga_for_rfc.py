@@ -98,7 +98,7 @@ class RFCFeatureSelector(object):
 
         evaluation = forest.predict(eval_data)
 
-        calculate_accuracy(evaluation, expected_eval_outputs)
+        accuracy = calculate_accuracy(evaluation, expected_eval_outputs)
 
         # Optional
         if accuracy > 0.8:
