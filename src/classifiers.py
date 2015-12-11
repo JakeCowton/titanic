@@ -53,6 +53,7 @@ def random_forest():
     em = EvaluationMetrics(evaluation, expected_eval_outputs)
     print "Accuracy: " + str(em.calculate_accuracy())
     print "Precision:" + str(em.calculate_precision())
+    print "Recall: " + str(em.calculate_recall())
     print "F1 measure:" + str(em.calculate_f1())
 
     print "Predicting..."
@@ -74,6 +75,7 @@ def random_forest():
     em = EvaluationMetrics(evaluation, expected_eval_outputs)
     print "Accuracy: " + str(em.calculate_accuracy())
     print "Precision:" + str(em.calculate_precision())
+    print "Recall: " + str(em.calculate_recall())
     print "F1 measure:" + str(em.calculate_f1())
 
     print "Predicting..."
@@ -131,6 +133,7 @@ def slp():
     em = EvaluationMetrics(evaluation, expected_eval_outputs)
     print "Accuracy: " + str(em.calculate_accuracy())
     print "Precision:" + str(em.calculate_precision())
+    print "Recall: " + str(em.calculate_recall())
     print "F1 measure:" + str(em.calculate_f1())
 
     print "Predicting..."
@@ -185,7 +188,7 @@ def mlp():
         data[i]['outputs'] = expected_training_outputs[i]
 
     print "Training..."
-    nn = create_nn(data, (no_of_inputs,3,1))
+    nn = create_nn(data, (no_of_inputs,100,1))
 
     print "Evaluating..."
     evaluation = []
@@ -199,6 +202,7 @@ def mlp():
     em = EvaluationMetrics(evaluation, expected_eval_outputs)
     print "Accuracy: " + str(em.calculate_accuracy())
     print "Precision:" + str(em.calculate_precision())
+    print "Recall: " + str(em.calculate_recall())
     print "F1 measure:" + str(em.calculate_f1())
 
     print "Predicting..."
