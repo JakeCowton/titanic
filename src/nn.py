@@ -73,7 +73,7 @@ class NN(object):
 		# Return the last layer (output layers)
 		return self.layers[-1]
 
-	def back_propagate(self, target, lr=0.1, momentum=01):
+	def back_propagate(self, target, lr=0.1, momentum=0.1):
 		"""
 		Back propage the network with a target value
 		:type target: float
