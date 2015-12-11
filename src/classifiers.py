@@ -252,7 +252,7 @@ def sk_svm():
     eval_data = normalise_data(eval_df).values
     test_data = normalise_data(test_df).values
 
-    clf = svm.SVC()
+    clf = svm.LinearSVC()
 
     print "Training..."
     clf.fit(train_data, expected_training_outputs)
