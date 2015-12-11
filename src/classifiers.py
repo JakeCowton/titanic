@@ -8,6 +8,7 @@ from slp import create_slp
 from nn_manager import create_nn, call_nn
 from ga_for_mlp import MLPFeatureSelector
 from ga_for_rfc import RFCFeatureSelector
+from sklearn import svm
 
 
 def random_forest():
@@ -217,6 +218,60 @@ def mlp():
 
     print "Writing results..."
     write_results("mlp.csv", ids, output)
+
+    print "Done"
+
+    return True
+
+def sk_svm():
+    print "--- SVM ---"
+
+    train_df = get_training_data()
+    eval_df = get_evaluation_data()
+    test_df = get_testing_data()
+
+    ids = test_df.PassengerId.values
+
+    print "Massaging data..."
+
+    expected_training_outputs = train_df.Survived.values
+    train_df = train_df.drop(["PassengerId", "Survived", "Name",
+                              "Ticket", "Cabin"],
+                              axis=1)
+
+    expected_eval_outputs = eval_df.Survived.values
+    eval_df = eval_df.drop(["PassengerId", "Survived", "Name",\
+                            "Ticket", "Cabin"],
+                            axis=1)
+
+    # Drop all but class
+    test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
+                             axis=1)
+
+    train_data = normalise_data(train_df).values
+    eval_data = normalise_data(eval_df).values
+    test_data = normalise_data(test_df).values
+
+    clf = svm.SVC()
+
+    print "Training..."
+    clf.fit(train_data, expected_training_outputs)
+
+    print "Evaluating..."
+    evaluation = clf.predict(eval_data)
+
+    em = EvaluationMetrics(evaluation, expected_eval_outputs)
+    print "Accuracy: " + str(em.calculate_accuracy())
+    print "Precision:" + str(em.calculate_precision())
+    print "Recall: " + str(em.calculate_recall())
+    print "F1 measure:" + str(em.calculate_f1())
+
+    print "Predicting..."
+    output = clf.predict(test_data)
+
+    print "Writing results..."
+    write_results("svm.csv", ids, output)
+
 
     print "Done"
 
