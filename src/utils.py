@@ -102,8 +102,10 @@ def fill_nan(input_fields, output_field, to_predict, method="svr"):
                                   "Ticket", "Cabin"],
                                  axis=1)
 
-    train_inputs = train_inputs.get(input_fields).values
+    train_inputs = normalise_data(train_inputs.get(input_fields)).values
 
     svm.fit(input_fields, outputs)
 
-    return svm.predict(to_predict.get(input_fields).values())
+    predict_inputs = normalise_data(to_predict.get(input_fields)).values
+
+    return svm.predict(predict_inputs)
