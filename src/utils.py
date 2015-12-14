@@ -82,6 +82,34 @@ def normalise_data(data):
         # This means it was dropped because of the GA
         pass
 
+    # Name (using title)
+    try:
+        data.loc[data["Name"].str.contains("Mr"), "Title"] = 0.0
+        data.loc[data["Name"].str.contains("Mrs"), "Title"] = 1.0
+        data.loc[data["Name"].str.contains("Miss"), "Title"] = 2.0
+        data.loc[data["Name"].str.contains("Master"), "Title"] = 3.0
+        data.loc[data["Name"].str.contains("Don"), "Title"] = 4.0
+        data.loc[data["Name"].str.contains("Rev"), "Title"] = 5.0
+        data.loc[data["Name"].str.contains("Dr"), "Title"] = 6.0
+        data.loc[data["Name"].str.contains("Mme"), "Title"] = 7.0
+        data.loc[data["Name"].str.contains("Ms"), "Title"] = 8.0
+        data.loc[data["Name"].str.contains("Major"), "Title"] = 9.0
+        data.loc[data["Name"].str.contains("Mlle"), "Title"] = 10.0
+        data.loc[data["Name"].str.contains("Col"), "Title"] = 11.0
+        data.loc[data["Name"].str.contains("Capt"), "Title"] = 12.0
+        # Dutch male noble
+        data.loc[data["Name"].str.contains("Jonkheer"), "Title"] = 13.0
+        data.loc[data["Name"].str.contains("Countess"), "Title"] = 14.0
+
+        data["Name"] = data["Name"].fillna(0.0) # Most common
+
+        # Replaces names with title mappings
+        data.Name = data.Title
+        data = data.drop(["Title"], axis=1)
+
+    except KeyError:
+        pass
+
     normalised_data = (data - data.min()) / (data.max() - data.min())
 
     return normalised_data
@@ -96,7 +124,7 @@ def fill_nan(input_fields, output_field, to_predict, method="svr"):
 
     train_df = get_all_training_data()
 
-    expected_output = train_df[output_field].values
+    expected_output = train_df.get([output_field]).values
     train_inputs = train_df.drop(["PassengerId",
                                   "Survived", "Name",
                                   "Ticket", "Cabin"],

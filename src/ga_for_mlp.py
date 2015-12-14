@@ -49,17 +49,18 @@ class MLPFeatureSelector(object):
         self.toolbox.register("select", tools.selTournament, tournsize=3)
 
     def individual_generator(self):
-        return np.random.randint(2, size=7)
+        return np.random.randint(2, size=8)
 
     def codec_to_english(self, codec):
         translation = {
             "Pclass": codec[0],
-            "Sex": codec[1],
-            "Age": codec[2],
-            "SibSp": codec[3],
-            "Parch": codec[4],
-            "Fare": codec[5],
-            "Embarked": codec[6]
+            "Name": code[1],
+            "Sex": codec[2],
+            "Age": codec[3],
+            "SibSp": codec[4],
+            "Parch": codec[5],
+            "Fare": codec[6],
+            "Embarked": codec[7]
         }
 
         return translation
@@ -67,6 +68,7 @@ class MLPFeatureSelector(object):
     def get_feature_name(self, index):
         translation = [
             "Pclass",
+            "Name"
             "Sex",
             "Age",
             "SibSp",
@@ -116,7 +118,6 @@ class MLPFeatureSelector(object):
         inputs = raw_data.drop([
                                     "Survived",
                                     "PassengerId",
-                                    "Name",
                                     "Ticket",
                                     "Cabin"
                                ], axis=1)
@@ -143,7 +144,6 @@ class MLPFeatureSelector(object):
     def massage_data_without_outputs(self, raw_data, individual):
         inputs = raw_data.drop([
                                     "PassengerId",
-                                    "Name",
                                     "Ticket",
                                     "Cabin"
                                ], axis=1)

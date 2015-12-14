@@ -24,17 +24,17 @@ def random_forest():
     print "Massaging data..."
 
     expected_training_outputs = train_df.Survived.values
-    train_df = train_df.drop(["PassengerId", "Survived", "Name",
+    train_df = train_df.drop(["PassengerId", "Survived",
                               "Ticket", "Cabin"],
                               axis=1)
 
     expected_eval_outputs = eval_df.Survived.values
-    eval_df = eval_df.drop(["PassengerId", "Survived", "Name",\
+    eval_df = eval_df.drop(["PassengerId", "Survived",\
                             "Ticket", "Cabin"],
                             axis=1)
 
     # Drop all but class
-    test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
+    test_df = test_df.drop(["PassengerId", "Ticket", "Cabin",],
                              axis=1)
 
     train_data = normalise_data(train_df).values
@@ -103,17 +103,17 @@ def slp():
     print "Massaging data..."
 
     expected_training_outputs = train_df.Survived.values
-    train_df = train_df.drop(["PassengerId", "Survived", "Name",
+    train_df = train_df.drop(["PassengerId", "Survived",
                               "Ticket", "Cabin"],
                               axis=1)
 
     expected_eval_outputs = eval_df.Survived.values
-    eval_df = eval_df.drop(["PassengerId", "Survived", "Name",\
+    eval_df = eval_df.drop(["PassengerId", "Survived",\
                             "Ticket", "Cabin"],
                             axis=1)
 
     # Drop all but class
-    test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
+    test_df = test_df.drop(["PassengerId", "Ticket", "Cabin",],
                              axis=1)
 
 
@@ -162,17 +162,17 @@ def mlp():
     print "Massaging data..."
 
     expected_training_outputs = train_df.Survived.values
-    train_df = train_df.drop(["PassengerId", "Survived", "Name",
+    train_df = train_df.drop(["PassengerId", "Survived",
                               "Ticket", "Cabin"],
                               axis=1)
 
     expected_eval_outputs = eval_df.Survived.values
-    eval_df = eval_df.drop(["PassengerId", "Survived", "Name",\
+    eval_df = eval_df.drop(["PassengerId", "Survived",\
                             "Ticket", "Cabin"],
                             axis=1)
 
     # Drop all but class
-    test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
+    test_df = test_df.drop(["PassengerId", "Ticket", "Cabin",],
                              axis=1)
 
     train_data = normalise_data(train_df).values
@@ -235,17 +235,17 @@ def sk_svm():
     print "Massaging data..."
 
     expected_training_outputs = train_df.Survived.values
-    train_df = train_df.drop(["PassengerId", "Survived", "Name",
+    train_df = train_df.drop(["PassengerId", "Survived",
                               "Ticket", "Cabin"],
                               axis=1)
 
     expected_eval_outputs = eval_df.Survived.values
-    eval_df = eval_df.drop(["PassengerId", "Survived", "Name",\
+    eval_df = eval_df.drop(["PassengerId", "Survived",\
                             "Ticket", "Cabin"],
                             axis=1)
 
     # Drop all but class
-    test_df = test_df.drop(["PassengerId", "Name", "Ticket", "Cabin",],
+    test_df = test_df.drop(["PassengerId", "Ticket", "Cabin",],
                              axis=1)
 
     train_data = normalise_data(train_df).values
