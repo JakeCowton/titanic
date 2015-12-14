@@ -81,6 +81,6 @@ def normalise_data(data):
         # This means it was dropped because of the GA
         pass
 
-    normalised_data = (data - data.mean()) / (data.max() - data.min())
+    normalised_data = (data - data.min()) / (data.max() - data.min())
 
     return normalised_data
