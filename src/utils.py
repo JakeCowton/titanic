@@ -43,44 +43,44 @@ def get_testing_data():
 
 def normalise_data(data):
 
-        try:
-            # Replace missing ages with the median age
-            data["Age"] = data["Age"].fillna(data["Age"].median())
-        except KeyError:
-            # This means it was dropped because of the GA
-            pass
+    try:
+        # Replace missing ages with the median age
+        data["Age"] = data["Age"].fillna(data["Age"].median())
+    except KeyError:
+        # This means it was dropped because of the GA
+        pass
 
-        try:
-            # Replace NaNs with most frequented point of embarkment
-            data["Embarked"] = data["Embarked"].fillna(data["Embarked"].max())
-        except KeyError:
-            # Removed by GA
-            pass
+    try:
+        # Replace NaNs with most frequented point of embarkment
+        data["Embarked"] = data["Embarked"].fillna(data["Embarked"].max())
+    except KeyError:
+        # Removed by GA
+        pass
 
-        try:
-            data["Fare"] = data["Fare"].fillna(data["Fare"].median())
-        except KeyError:
-            # Removed by GA
-            pass
+    try:
+        data["Fare"] = data["Fare"].fillna(data["Fare"].median())
+    except KeyError:
+        # Removed by GA
+        pass
 
-        # Sex
-        try:
-            data.loc[data["Sex"] == "female", "Sex"] = 0.0
-            data.loc[data["Sex"] == "male", "Sex"] = 1.0
-        except KeyError:
-            # This means it was dropped because of the GA
-            pass
+    # Sex
+    try:
+        data.loc[data["Sex"] == "female", "Sex"] = 0.0
+        data.loc[data["Sex"] == "male", "Sex"] = 1.0
+    except KeyError:
+        # This means it was dropped because of the GA
+        pass
 
-        # Embarked
-        try:
-            data.loc[data["Embarked"] == "C", "Embarked"] = 0.0
-            data.loc[data["Embarked"] == "S", "Embarked"] = 1.0
-            data.loc[data["Embarked"] == "Q", "Embarked"] = 2.0
+    # Embarked
+    try:
+        data.loc[data["Embarked"] == "C", "Embarked"] = 0.0
+        data.loc[data["Embarked"] == "S", "Embarked"] = 1.0
+        data.loc[data["Embarked"] == "Q", "Embarked"] = 2.0
 
-        except KeyError:
-            # This means it was dropped because of the GA
-            pass
+    except KeyError:
+        # This means it was dropped because of the GA
+        pass
 
-        normalised_data = (data - data.mean()) / (data.max() - data.min())
+    normalised_data = (data - data.mean()) / (data.max() - data.min())
 
-        return normalised_data
+    return normalised_data
