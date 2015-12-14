@@ -5,6 +5,7 @@ Utility functions for titanic data analysis
 """
 import pandas as pd
 import fuckit
+from sklearn.svm import SVR, SVC
 
 
 def write_results(filename, ids, output):
@@ -84,3 +85,25 @@ def normalise_data(data):
     normalised_data = (data - data.min()) / (data.max() - data.min())
 
     return normalised_data
+
+def fill_nan(input_fields, output_field, to_predict, method="svr"):
+    svm = None
+
+    if method == "svr":
+        svm = SVR()
+    else:
+        svm = SVC()
+
+    train_df = get_all_training_data()
+
+    expected_output = train_df[output_field].values
+    train_inputs = train_df.drop(["PassengerId",
+                                  "Survived", "Name",
+                                  "Ticket", "Cabin"],
+                                 axis=1)
+
+    train_inputs = train_inputs.get(input_fields).values
+
+    svm.fit(input_fields, outputs)
+
+    return svm.predict(to_predict.get(input_fields).values())
