@@ -299,6 +299,7 @@ def ga_mlp():
 
         no_of_inputs = features.count(1)
 
+        print "Training..."
         nn = create_nn(train_data, (no_of_inputs, 3, 1))
 
         print "Evaluating..."
@@ -340,11 +341,7 @@ def ga_rfc():
 
     print "--- GA & RFC ---"
 
-    train_df = get_training_data()
-    eval_df = get_evaluation_data()
     test_df = get_testing_data()
-    all_train_df = get_all_training_data()
-
     ids = test_df.PassengerId.values
 
     print "Selecting features..."
@@ -352,27 +349,42 @@ def ga_rfc():
     ga = RFCFeatureSelector()
     features = ga.calculate()
 
-    print "Massaging data..."
-    expected_training_outputs = train_df.Survived.values
-    train_data = ga.massage_data_with_outputs(train_df, features)
-
-    expected_eval_outputs = eval_df.Survived.values
-    eval_data = ga.massage_data_with_outputs(eval_df, features)
-
     test_data = ga.massage_data_without_outputs(test_df, features)
 
-    all_expected_outputs = all_train_df.Survived.values
-    all_train_data = ga.massage_data_with_outputs(all_train_df, features)
+    f_scores = []
 
-    no_of_inputs = features.count(1)
+    for i in range(K_FOLDS):
+        print "Massaging data..."
 
-    print "Retraining..."
+        train_df = get_training_data(fold=i)
+        eval_df = get_evaluation_data(fold=i)
 
-    forest = RandomForestClassifier(n_estimators=1000,
-                                    n_jobs=-1,
-                                    criterion="entropy")
+        expected_training_outputs = train_df.Survived.values
+        train_data = ga.massage_data_with_outputs(train_df, features)
 
-    forest = forest.fit(all_train_data, all_expected_outputs)
+        expected_eval_outputs = eval_df.Survived.values
+        eval_data = ga.massage_data_with_outputs(eval_df, features)
+
+        no_of_inputs = features.count(1)
+
+        print "Training..."
+
+        forest = RandomForestClassifier(n_estimators=1000,
+                                        n_jobs=-1,
+                                        criterion="entropy")
+
+        forest = forest.fit(train_data, expected_training_outputs)
+
+        print "Evaluating..."
+        evaluation = forest.predict(eval_data)
+
+        em = EvaluationMetrics(evaluation, expected_eval_outputs)
+        print "Accuracy: " + str(em.calculate_accuracy())
+        print "Precision:" + str(em.calculate_precision())
+        print "Recall: " + str(em.calculate_recall())
+        f1 = em.calculate_f1()
+        f_scores.append(f1)
+        print "F1 measure:" + str(f1)
 
     print "Predicting..."
 
@@ -383,4 +395,4 @@ def ga_rfc():
 
     print "Done"
 
-    return True
+    return f_scores

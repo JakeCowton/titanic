@@ -81,6 +81,7 @@ class RFCFeatureSelector(object):
 
     def evaluate_ind(self, ind):
         no_of_inputs = ind.count(1)
+        # Uses fold=0 for feature selection
         expected_outputs = get_training_data().Survived.values
         train_data = self.massage_data_with_outputs(get_training_data(), ind)
 
@@ -90,6 +91,7 @@ class RFCFeatureSelector(object):
 
         forest.fit(train_data, expected_outputs)
 
+        # Uses fold=0 for feature selection
         expected_eval_outputs = get_evaluation_data().Survived.values
         eval_data = self.massage_data_with_outputs(get_evaluation_data(), ind)
 
