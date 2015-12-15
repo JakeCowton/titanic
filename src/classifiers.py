@@ -272,12 +272,7 @@ def sk_svm():
 def ga_mlp():
 
     print "--- GA & MLP ---"
-
-    train_df = get_training_data()
-    eval_df = get_evaluation_data()
     test_df = get_testing_data()
-    all_train_df = get_all_training_data()
-
     ids = test_df.PassengerId.values
 
     print "Selecting features..."
@@ -285,24 +280,43 @@ def ga_mlp():
     ga = MLPFeatureSelector()
     features = ga.calculate()
 
-    print "Massaging data..."
-
-    expected_training_outputs = train_df.Survived.values
-    train_data = ga.massage_data_with_outputs(train_df, features)
-
-    expected_eval_outputs = eval_df.Survived.values
-    eval_data = ga.massage_data_with_outputs(eval_df, features)
-
     test_data = ga.massage_data_without_outputs(test_df, features)
 
-    no_of_inputs = features.count(1)
+    f_scores = []
 
-    print "Retraining..."
+    for i in range(K_FOLDS):
 
-    all_train_df = get_all_training_data()
-    all_train_data = ga.massage_data_with_outputs(all_train_df, features)
+        print "Massaging data..."
 
-    nn = create_nn(all_train_data, (no_of_inputs, 3, 1))
+        train_df = get_training_data(fold=i)
+        eval_df = get_evaluation_data(fold=i)
+
+        expected_training_outputs = train_df.Survived.values
+        train_data = ga.massage_data_with_outputs(train_df, features)
+
+        expected_eval_outputs = eval_df.Survived.values
+        eval_data = ga.massage_data_with_outputs(eval_df, features)
+
+        no_of_inputs = features.count(1)
+
+        nn = create_nn(train_data, (no_of_inputs, 3, 1))
+
+        print "Evaluating..."
+        evaluation = []
+        for sample in eval_data:
+            out = call_nn(nn, sample[0])
+            if out >= 0.5:
+                evaluation.append(1)
+            else:
+                evaluation.append(0)
+
+        em = EvaluationMetrics(evaluation, expected_eval_outputs)
+        print "Accuracy: " + str(em.calculate_accuracy())
+        print "Precision:" + str(em.calculate_precision())
+        print "Recall: " + str(em.calculate_recall())
+        f1 = em.calculate_f1()
+        f_scores.append(f1)
+        print "F1 measure:" + str(f1)
 
     print "Predicting..."
 
@@ -320,7 +334,7 @@ def ga_mlp():
 
     print "Done"
 
-    return True
+    return f_scores
 
 def ga_rfc():
 

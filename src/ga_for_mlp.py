@@ -84,6 +84,7 @@ class MLPFeatureSelector(object):
         if no_of_inputs <= 1:
             return 0.0
 
+        # Uses fold = 0 only, for feature selection
         test_data = self.massage_data_with_outputs(get_training_data(), ind)
         nn = create_nn(test_data, (no_of_inputs, 3, 1))
 
