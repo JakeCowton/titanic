@@ -11,51 +11,57 @@ from ga_for_rfc import RFCFeatureSelector
 from sklearn import svm
 
 
+K_FOLDS = 10
+
 def random_forest():
 
     print "--- Random Forest Classifier ---"
 
-    train_df = get_training_data()
-    eval_df = get_evaluation_data()
     test_df = get_testing_data()
-
     ids = test_df.PassengerId.values
-
-    print "Massaging data..."
-
-    expected_training_outputs = train_df.Survived.values
-    train_df = train_df.drop(["PassengerId", "Survived",
-                              "Ticket", "Cabin"],
-                              axis=1)
-
-    expected_eval_outputs = eval_df.Survived.values
-    eval_df = eval_df.drop(["PassengerId", "Survived",\
-                            "Ticket", "Cabin"],
-                            axis=1)
-
     # Drop all but class
     test_df = test_df.drop(["PassengerId", "Ticket", "Cabin",],
                              axis=1)
-
-    train_data = normalise_data(train_df).values
-    eval_data = normalise_data(eval_df).values
     test_data = normalise_data(test_df).values
 
-    print "Training... (using entropy)"
-    forest = RandomForestClassifier(n_estimators=200,
-                                    n_jobs=-1,
-                                    criterion="entropy")
+    f_scores = []
 
-    forest = forest.fit(train_data, expected_training_outputs)
+    for i in range(K_FOLDS):
+        train_df = get_training_data(fold=i)
+        eval_df = get_evaluation_data(fold=i)
 
-    print "Evaluating..."
-    evaluation = forest.predict(eval_data)
+        print "Massaging data..."
 
-    em = EvaluationMetrics(evaluation, expected_eval_outputs)
-    print "Accuracy: " + str(em.calculate_accuracy())
-    print "Precision:" + str(em.calculate_precision())
-    print "Recall: " + str(em.calculate_recall())
-    print "F1 measure:" + str(em.calculate_f1())
+        expected_training_outputs = train_df.Survived.values
+        train_df = train_df.drop(["PassengerId", "Survived",
+                                  "Ticket", "Cabin"],
+                                  axis=1)
+
+        expected_eval_outputs = eval_df.Survived.values
+        eval_df = eval_df.drop(["PassengerId", "Survived",\
+                                "Ticket", "Cabin"],
+                                axis=1)
+
+        train_data = normalise_data(train_df).values
+        eval_data = normalise_data(eval_df).values
+
+        print "Training..."
+        forest = RandomForestClassifier(n_estimators=200,
+                                        n_jobs=-1,
+                                        criterion="entropy")
+
+        forest = forest.fit(train_data, expected_training_outputs)
+
+        print "Evaluating..."
+        evaluation = forest.predict(eval_data)
+
+        em = EvaluationMetrics(evaluation, expected_eval_outputs)
+        print "Accuracy: " + str(em.calculate_accuracy())
+        print "Precision:" + str(em.calculate_precision())
+        print "Recall: " + str(em.calculate_recall())
+        f1 = em.calculate_f1()
+        f_scores.append(f1)
+        print "F1 measure:" + str(f1)
 
     print "Predicting..."
     output = forest.predict(test_data)
@@ -63,32 +69,9 @@ def random_forest():
     print "Writing results..."
     write_results("rand_forest_entropy.csv", ids, output)
 
-    print "Training... (using gini)"
-    forest = RandomForestClassifier(n_estimators=200,
-                                    n_jobs=-1,
-                                    criterion="gini")
-
-    forest = forest.fit(train_data, expected_training_outputs)
-
-    print "Evaluating..."
-    evaluation = forest.predict(eval_data)
-
-    em = EvaluationMetrics(evaluation, expected_eval_outputs)
-    print "Accuracy: " + str(em.calculate_accuracy())
-    print "Precision:" + str(em.calculate_precision())
-    print "Recall: " + str(em.calculate_recall())
-    print "F1 measure:" + str(em.calculate_f1())
-
-    print "Predicting..."
-    output = forest.predict(test_data)
-
-    print "Writing results..."
-    write_results("rand_forest_gini.csv", ids, output)
-
-
     print "Done"
 
-    return True
+    return f_scores
 
 def slp():
 

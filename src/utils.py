@@ -8,6 +8,19 @@ import fuckit
 from sklearn.svm import SVR, SVC
 
 
+EVALUATION_FOLD_RANGE = {
+    0: (0,    89),
+    1: (90,  179),
+    2: (180, 269),
+    3: (270, 359),
+    4: (360, 449),
+    5: (450, 539),
+    6: (540, 629),
+    7: (630, 719),
+    8: (720, 809),
+    9: (810, 889)
+}
+
 def write_results(filename, ids, output):
     root_path = "/home/jake/src/ncl/titanic/outputs/"
     with open(root_path + filename, "wb") as f:
@@ -17,19 +30,26 @@ def write_results(filename, ids, output):
 
     return True
 
-def get_training_data():
+def get_training_data(fold=0):
     """
-    Gets first 800 rows of train.csv
+    Min fold = 0
+    Max fold = 9
     """
-    train_df = pd.read_csv("../data/train.csv", header=0)
-    return train_df[0:800]
+    all_train_df = get_all_training_data()
+    lower_limit, upper_limit = EVALUATION_FOLD_RANGE.get(fold)
+    # Deletes the eval range
+    train_df = all_train_df.drop(all_train_df.index[lower_limit:upper_limit])
+    return train_df
 
-def get_evaluation_data():
+def get_evaluation_data(fold=0):
     """
-    Gets last 90 rows of train.csv for accuracy calculation
+    Min fold = 0
+    Max fold = 9
     """
-    train_df = pd.read_csv("../data/train.csv", header=0)
-    return train_df[801:]
+    train_df = get_all_training_data()
+    lower_limit, upper_limit = EVALUATION_FOLD_RANGE.get(fold)
+    eval_df = train_df.ix[lower_limit:upper_limit]
+    return eval_df
 
 def get_all_training_data():
     train_df = pd.read_csv("../data/train.csv", header=0)
