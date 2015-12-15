@@ -76,49 +76,51 @@ def random_forest():
 def slp():
 
     print "--- SLP ---"
-
-    train_df = get_training_data()
-    eval_df = get_evaluation_data()
     test_df = get_testing_data()
-
     ids = test_df.PassengerId.values
-
-    print "Massaging data..."
-
-    expected_training_outputs = train_df.Survived.values
-    train_df = train_df.drop(["PassengerId", "Survived",
-                              "Ticket", "Cabin"],
-                              axis=1)
-
-    expected_eval_outputs = eval_df.Survived.values
-    eval_df = eval_df.drop(["PassengerId", "Survived",\
-                            "Ticket", "Cabin"],
-                            axis=1)
-
-    # Drop all but class
     test_df = test_df.drop(["PassengerId", "Ticket", "Cabin",],
                              axis=1)
-
-
-    train_data = normalise_data(train_df).values
-    eval_data = normalise_data(eval_df).values
     test_data = normalise_data(test_df).values
 
-    print "Training..."
+    f_scores = []
 
-    perceptron = create_slp(train_data, expected_training_outputs)
+    for i in range(K_FOLDS):
 
-    print "Evaluating..."
+        print "Massaging data..."
 
-    evaluation = []
-    for sample in eval_data:
-        evaluation.append(perceptron.recall(sample))
+        train_df = get_training_data(fold=i)
+        eval_df = get_evaluation_data(fold=i)
 
-    em = EvaluationMetrics(evaluation, expected_eval_outputs)
-    print "Accuracy: " + str(em.calculate_accuracy())
-    print "Precision:" + str(em.calculate_precision())
-    print "Recall: " + str(em.calculate_recall())
-    print "F1 measure:" + str(em.calculate_f1())
+        expected_training_outputs = train_df.Survived.values
+        train_df = train_df.drop(["PassengerId", "Survived",
+                                  "Ticket", "Cabin"],
+                                  axis=1)
+
+        expected_eval_outputs = eval_df.Survived.values
+        eval_df = eval_df.drop(["PassengerId", "Survived",\
+                                "Ticket", "Cabin"],
+                                axis=1)
+
+        train_data = normalise_data(train_df).values
+        eval_data = normalise_data(eval_df).values
+
+        print "Training..."
+
+        perceptron = create_slp(train_data, expected_training_outputs)
+
+        print "Evaluating..."
+
+        evaluation = []
+        for sample in eval_data:
+            evaluation.append(perceptron.recall(sample))
+
+        em = EvaluationMetrics(evaluation, expected_eval_outputs)
+        print "Accuracy: " + str(em.calculate_accuracy())
+        print "Precision:" + str(em.calculate_precision())
+        print "Recall: " + str(em.calculate_recall())
+        f1 = em.calculate_f1()
+        f_scores.append(f1)
+        print "F1 measure:" + str(f1)
 
     print "Predicting..."
 
@@ -131,7 +133,7 @@ def slp():
 
     print "Done"
 
-    return True
+    return f_scores
 
 def mlp():
     print "--- MLP ---"
