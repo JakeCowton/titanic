@@ -69,7 +69,7 @@ class RFCFeatureSelector(object):
     def get_feature_name(self, index):
         translation = [
             "Pclass",
-            "Name"
+            "Name",
             "Sex",
             "Age",
             "SibSp",
