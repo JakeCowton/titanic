@@ -18,7 +18,7 @@ def _train(net, data, epochs, lr, momentum):
 			net.feed_forward(data['inputs'][n])
 			net.back_propagate(data['outputs'][n], lr, momentum)
 
-def create_nn(data, structure, epochs=300, lr=0.01, momentum=0.5):
+def create_nn(data, structure, epochs=100, lr=0.01, momentum=0.1):
 	"""
 	Create and train the neural network
 	:type data: ndarray
