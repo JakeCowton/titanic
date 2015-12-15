@@ -14,9 +14,6 @@ from sklearn import svm
 K_FOLDS = 10
 
 def random_forest():
-
-    print "--- Random Forest Classifier ---"
-
     test_df = get_testing_data()
     ids = test_df.PassengerId.values
     # Drop all but class
@@ -30,8 +27,6 @@ def random_forest():
         train_df = get_training_data(fold=i)
         eval_df = get_evaluation_data(fold=i)
 
-        print "Massaging data..."
-
         expected_training_outputs = train_df.Survived.values
         train_df = train_df.drop(["PassengerId", "Survived",
                                   "Ticket", "Cabin"],
@@ -45,37 +40,29 @@ def random_forest():
         train_data = normalise_data(train_df).values
         eval_data = normalise_data(eval_df).values
 
-        print "Training..."
+
         forest = RandomForestClassifier(n_estimators=200,
                                         n_jobs=-1,
                                         criterion="entropy")
 
         forest = forest.fit(train_data, expected_training_outputs)
 
-        print "Evaluating..."
+
         evaluation = forest.predict(eval_data)
 
         em = EvaluationMetrics(evaluation, expected_eval_outputs)
-        print "Accuracy: " + str(em.calculate_accuracy())
-        print "Precision:" + str(em.calculate_precision())
-        print "Recall: " + str(em.calculate_recall())
         f1 = em.calculate_f1()
         f_scores.append(f1)
-        print "F1 measure:" + str(f1)
 
-    print "Predicting..."
+
     output = forest.predict(test_data)
 
-    print "Writing results..."
     write_results("rand_forest_entropy.csv", ids, output)
 
-    print "Done"
 
     return f_scores
 
 def slp():
-
-    print "--- SLP ---"
     test_df = get_testing_data()
     ids = test_df.PassengerId.values
     test_df = test_df.drop(["PassengerId", "Ticket", "Cabin",],
@@ -85,8 +72,6 @@ def slp():
     f_scores = []
 
     for i in range(K_FOLDS):
-
-        print "Massaging data..."
 
         train_df = get_training_data(fold=i)
         eval_df = get_evaluation_data(fold=i)
@@ -104,39 +89,26 @@ def slp():
         train_data = normalise_data(train_df).values
         eval_data = normalise_data(eval_df).values
 
-        print "Training..."
-
         perceptron = create_slp(train_data, expected_training_outputs)
-
-        print "Evaluating..."
 
         evaluation = []
         for sample in eval_data:
             evaluation.append(perceptron.recall(sample))
 
         em = EvaluationMetrics(evaluation, expected_eval_outputs)
-        print "Accuracy: " + str(em.calculate_accuracy())
-        print "Precision:" + str(em.calculate_precision())
-        print "Recall: " + str(em.calculate_recall())
         f1 = em.calculate_f1()
         f_scores.append(f1)
-        print "F1 measure:" + str(f1)
-
-    print "Predicting..."
 
     output = []
     for sample in test_data:
         output.append(perceptron.recall(sample))
 
-    print "Writing results..."
     write_results("slp.csv", ids, output)
 
-    print "Done"
 
     return f_scores
 
 def mlp():
-    print "--- MLP ---"
     test_df = get_testing_data()
     ids = test_df.PassengerId.values
     test_df = test_df.drop(["PassengerId", "Ticket", "Cabin",],
@@ -146,8 +118,6 @@ def mlp():
     f_scores = []
 
     for i in range(K_FOLDS):
-
-        print "Massaging data..."
 
         train_df = get_training_data(fold=i)
         eval_df = get_evaluation_data(fold=i)
@@ -175,10 +145,8 @@ def mlp():
             data[i]['inputs'] = train_data[i]
             data[i]['outputs'] = expected_training_outputs[i]
 
-        print "Training..."
         nn = create_nn(data, (no_of_inputs,100,1))
 
-        print "Evaluating..."
         evaluation = []
         for sample in eval_data:
             out = call_nn(nn, sample[0])
@@ -188,14 +156,8 @@ def mlp():
                 evaluation.append(0)
 
         em = EvaluationMetrics(evaluation, expected_eval_outputs)
-        print "Accuracy: " + str(em.calculate_accuracy())
-        print "Precision:" + str(em.calculate_precision())
-        print "Recall: " + str(em.calculate_recall())
         f1 = em.calculate_f1()
         f_scores.append(f1)
-        print "F1 measure:" + str(f1)
-
-    print "Predicting..."
 
     output = []
     for sample in test_data:
@@ -205,16 +167,11 @@ def mlp():
         else:
             output.append(0)
 
-    print "Writing results..."
     write_results("mlp.csv", ids, output)
-
-    print "Done"
 
     return f_scores
 
 def sk_svm():
-    print "--- SVM ---"
-
     test_df = get_testing_data()
     ids = test_df.PassengerId.values
     test_df = test_df.drop(["PassengerId", "Ticket", "Cabin",],
@@ -224,8 +181,6 @@ def sk_svm():
     f_scores = []
 
     for i in range(K_FOLDS):
-        print "Massaging data..."
-
         train_df = get_training_data(fold=i)
         eval_df = get_evaluation_data(fold=i)
 
@@ -243,39 +198,23 @@ def sk_svm():
         eval_data = normalise_data(eval_df).values
 
         clf = svm.LinearSVC()
-
-        print "Training..."
         clf.fit(train_data, expected_training_outputs)
 
-        print "Evaluating..."
         evaluation = clf.predict(eval_data)
 
         em = EvaluationMetrics(evaluation, expected_eval_outputs)
-        print "Accuracy: " + str(em.calculate_accuracy())
-        print "Precision:" + str(em.calculate_precision())
-        print "Recall: " + str(em.calculate_recall())
         f1 = em.calculate_f1()
         f_scores.append(f1)
-        print "F1 measure:" + str(f1)
 
-    print "Predicting..."
     output = clf.predict(test_data)
 
-    print "Writing results..."
     write_results("svm.csv", ids, output)
-
-
-    print "Done"
 
     return f_scores
 
 def ga_mlp():
-
-    print "--- GA & MLP ---"
     test_df = get_testing_data()
     ids = test_df.PassengerId.values
-
-    print "Selecting features..."
 
     ga = MLPFeatureSelector()
     features = ga.calculate()
@@ -285,9 +224,6 @@ def ga_mlp():
     f_scores = []
 
     for i in range(K_FOLDS):
-
-        print "Massaging data..."
-
         train_df = get_training_data(fold=i)
         eval_df = get_evaluation_data(fold=i)
 
@@ -299,10 +235,8 @@ def ga_mlp():
 
         no_of_inputs = features.count(1)
 
-        print "Training..."
         nn = create_nn(train_data, (no_of_inputs, 3, 1))
 
-        print "Evaluating..."
         evaluation = []
         for sample in eval_data:
             out = call_nn(nn, sample[0])
@@ -312,14 +246,8 @@ def ga_mlp():
                 evaluation.append(0)
 
         em = EvaluationMetrics(evaluation, expected_eval_outputs)
-        print "Accuracy: " + str(em.calculate_accuracy())
-        print "Precision:" + str(em.calculate_precision())
-        print "Recall: " + str(em.calculate_recall())
         f1 = em.calculate_f1()
         f_scores.append(f1)
-        print "F1 measure:" + str(f1)
-
-    print "Predicting..."
 
     output = []
     for sample in test_data:
@@ -329,22 +257,13 @@ def ga_mlp():
         else:
             output.append(0)
 
-    print "Writing results..."
-
     write_results("ga_mlp.csv", ids, output)
-
-    print "Done"
 
     return f_scores
 
 def ga_rfc():
-
-    print "--- GA & RFC ---"
-
     test_df = get_testing_data()
     ids = test_df.PassengerId.values
-
-    print "Selecting features..."
 
     ga = RFCFeatureSelector()
     features = ga.calculate()
@@ -354,8 +273,6 @@ def ga_rfc():
     f_scores = []
 
     for i in range(K_FOLDS):
-        print "Massaging data..."
-
         train_df = get_training_data(fold=i)
         eval_df = get_evaluation_data(fold=i)
 
@@ -367,32 +284,19 @@ def ga_rfc():
 
         no_of_inputs = features.count(1)
 
-        print "Training..."
-
         forest = RandomForestClassifier(n_estimators=1000,
                                         n_jobs=-1,
                                         criterion="entropy")
 
         forest = forest.fit(train_data, expected_training_outputs)
 
-        print "Evaluating..."
         evaluation = forest.predict(eval_data)
 
         em = EvaluationMetrics(evaluation, expected_eval_outputs)
-        print "Accuracy: " + str(em.calculate_accuracy())
-        print "Precision:" + str(em.calculate_precision())
-        print "Recall: " + str(em.calculate_recall())
         f1 = em.calculate_f1()
         f_scores.append(f1)
-        print "F1 measure:" + str(f1)
-
-    print "Predicting..."
 
     output = forest.predict(test_data)
-
-    print "Writing results..."
     write_results("ga_rfc.csv", ids, output)
-
-    print "Done"
 
     return f_scores

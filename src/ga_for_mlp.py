@@ -101,10 +101,6 @@ class MLPFeatureSelector(object):
 
         em = EvaluationMetrics(evaluation, expected_eval_outputs)
         f1 = em.calculate_f1()
-        print "Accuracy: " + str(em.calculate_accuracy())
-        print "Precision:" + str(em.calculate_precision())
-        print "Recall: " + str(em.calculate_recall())
-        print "F1 measure:" + str(f1)
 
         # Optional
         if f1 > 0.74:
