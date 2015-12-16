@@ -72,13 +72,6 @@ def normalise_data(data):
         pass
 
     try:
-        # Replace NaNs with most frequented point of embarkment
-        data["Embarked"] = data["Embarked"].fillna(data["Embarked"].max())
-    except KeyError:
-        # Removed by GA
-        pass
-
-    try:
         data["Fare"] = data["Fare"].fillna(data["Fare"].median())
     except KeyError:
         # Removed by GA
@@ -97,6 +90,8 @@ def normalise_data(data):
         data.loc[data["Embarked"] == "C", "Embarked"] = 0.0
         data.loc[data["Embarked"] == "S", "Embarked"] = 1.0
         data.loc[data["Embarked"] == "Q", "Embarked"] = 2.0
+
+        data["Embarked"] = data["Embarked"].fillna(data["Embarked"].median())
 
     except KeyError:
         # This means it was dropped because of the GA
