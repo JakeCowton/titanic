@@ -1,4 +1,4 @@
-from classifiers import random_forest, slp, mlp, sk_svm, ga_mlp, ga_rfc
+from classifiers import random_forest, slp, mlp, sk_svm, ga_mlp, ga_rfc,ga_svm
 from numpy import asarray
 
 
@@ -9,6 +9,7 @@ def main():
     svm_f_scores = asarray(sk_svm())
     ga_mlp_f_scores = asarray(ga_mlp())
     ga_rfc_f_scores = asarray(ga_rfc())
+    ga_svm_f_scores = asarray(ga_svm())
 
     print "---Random Forest---"
     print "Mean: " + str(rfc_f_scores.mean())
@@ -33,6 +34,10 @@ def main():
     print "---GA RFC---"
     print "Mean: " + str(ga_rfc_f_scores.mean())
     print "Std : " + str(ga_rfc_f_scores.std())
+
+    print "---GA SVM---"
+    print "Mean: " + str(ga_svm_f_scores.mean())
+    print "Std : " + str(ga_svm_f_scores.std())
 
 if __name__ == "__main__":
     main()

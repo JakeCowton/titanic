@@ -8,6 +8,7 @@ from slp import create_slp
 from nn_manager import create_nn, call_nn
 from ga_for_mlp import MLPFeatureSelector
 from ga_for_rfc import RFCFeatureSelector
+from ga_for_svm import SVMFeatureSelector
 from sklearn import svm
 
 
@@ -219,6 +220,8 @@ def ga_mlp():
     ga = MLPFeatureSelector()
     features = ga.calculate()
 
+    print features
+
     test_data = ga.massage_data_without_outputs(test_df, features)
 
     f_scores = []
@@ -268,6 +271,8 @@ def ga_rfc():
     ga = RFCFeatureSelector()
     features = ga.calculate()
 
+    print features
+
     test_data = ga.massage_data_without_outputs(test_df, features)
 
     f_scores = []
@@ -297,6 +302,46 @@ def ga_rfc():
         f_scores.append(f1)
 
     output = forest.predict(test_data)
+    write_results("ga_rfc.csv", ids, output)
+
+    return f_scores
+
+def ga_svm():
+    test_df = get_testing_data()
+    ids = test_df.PassengerId.values
+
+    ga = SVMFeatureSelector()
+    features = ga.calculate()
+
+    print features
+
+    test_data = ga.massage_data_without_outputs(test_df, features)
+
+    f_scores = []
+
+    for i in range(K_FOLDS):
+        train_df = get_training_data(fold=i)
+        eval_df = get_evaluation_data(fold=i)
+
+        expected_training_outputs = train_df.Survived.values
+        train_data = ga.massage_data_with_outputs(train_df, features)
+
+        expected_eval_outputs = eval_df.Survived.values
+        eval_data = ga.massage_data_with_outputs(eval_df, features)
+
+        no_of_inputs = features.count(1)
+
+        clf = svm.SVC()
+
+        clf = clf.fit(train_data, expected_training_outputs)
+
+        evaluation = clf.predict(eval_data)
+
+        em = EvaluationMetrics(evaluation, expected_eval_outputs)
+        f1 = em.calculate_f1()
+        f_scores.append(f1)
+
+    output = clf.predict(test_data)
     write_results("ga_rfc.csv", ids, output)
 
     return f_scores
