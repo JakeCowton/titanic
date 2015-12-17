@@ -12,30 +12,37 @@ def main():
     ga_svm_f_scores = asarray(ga_svm())
 
     print "---Random Forest---"
+    print "F-Scores:" + str(rfc_f_scores)
     print "Mean: " + str(rfc_f_scores.mean())
     print "Std : " + str(rfc_f_scores.std())
 
     print "---SLP---"
+    print "F-Scores:" + str(slp_f_scores)
     print "Mean: " + str(slp_f_scores.mean())
     print "Std : " + str(slp_f_scores.std())
 
     print "---MLP---"
+    print "F-Scores:" + str(mlp_f_scores)
     print "Mean: " + str(mlp_f_scores.mean())
     print "Std : " + str(mlp_f_scores.std())
 
     print "---SVM---"
+    print "F-Scores:" + str(svm_f_scores)
     print "Mean: " + str(svm_f_scores.mean())
     print "Std : " + str(svm_f_scores.std())
 
-    print "---GA MLP---"
-    print "Mean: " + str(ga_mlp_f_scores.mean())
-    print "Std : " + str(ga_mlp_f_scores.std())
-
     print "---GA RFC---"
+    print "F-Scores:" + str(ga_rfc_f_scores)
     print "Mean: " + str(ga_rfc_f_scores.mean())
     print "Std : " + str(ga_rfc_f_scores.std())
 
+    print "---GA MLP---"
+    print "F-Scores:" + str(ga_mlp_f_scores)
+    print "Mean: " + str(ga_mlp_f_scores.mean())
+    print "Std : " + str(ga_mlp_f_scores.std())
+
     print "---GA SVM---"
+    print "F-Scores:" + str(ga_svm_f_scores)
     print "Mean: " + str(ga_svm_f_scores.mean())
     print "Std : " + str(ga_svm_f_scores.std())
 
