@@ -31,30 +31,6 @@ def create_nn(data, structure, epochs=100, lr=0.01, momentum=0.1):
 	_train(ann, data, epochs, lr, momentum)
 	return ann
 
-def _normalise(data):
-	"""
-	:type data: List
-	:param data: List of NN inputs in this order:
-	  NPC health, R damage, R availability, W damage, W availability, Q damage
-	:rtype: List
-	:returns: Normalised version of `data`
-	"""
-	health, r_dam, r_avail, w_dam, w_avail, q_dam = data
-
-	health = float(health) / float(500)
-
-	r_dam = float(r_dam) / float(500)
-
-	r_avail = float(r_avail)
-
-	w_dam = float(w_dam)/float(500)
-
-	w_avail = float(w_avail)
-
-	q_dam = float(q_dam) / float(500)
-
-	return [health, r_dam, r_avail, w_dam, w_avail, q_dam]
-
 def call_nn(nn, data):
 	"""
 	:type nn: NN object
@@ -64,8 +40,6 @@ def call_nn(nn, data):
 	:rtype: array
 	:returns: The output layer
 	"""
-
-	# data = _normalise(data)
 	return nn.feed_forward(data)
 
 def find_mse(nn, data):
