@@ -1,5 +1,5 @@
 from classifiers import random_forest, slp, mlp, sk_svm, ga_mlp, ga_rfc,ga_svm
-from numpy import asarray
+from numpy import asarray, matrix
 
 
 def main():
@@ -46,5 +46,13 @@ def main():
     print "Mean: " + str(ga_svm_f_scores.mean())
     print "Std : " + str(ga_svm_f_scores.std())
 
+    return matrix([rfc_f_scores,
+                   slp_f_scores,
+                   mlp_f_scores,
+                   svm_f_scores,
+                   ga_rfc_f_scores,
+                   ga_mlp_f_scores,
+                   ga_svm_f_scores])
+
 if __name__ == "__main__":
-    main()
+    mat = main()

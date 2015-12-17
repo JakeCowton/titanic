@@ -105,7 +105,6 @@ def slp():
 
     write_results("slp.csv", ids, output)
 
-
     return f_scores
 
 def mlp():
