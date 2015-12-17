@@ -25,27 +25,6 @@ from perceptron import Perceptron
 # Lowest MSE
 LMSE = 0.001
 
-# Because there are 3 classes
-NORMALISATION_VALUE = 1/3.0
-
-def normalise(data):
-    """
-    Turn data into values between 0 and 1
-    @param data list of lists of input data and output e.g.
-        [
-            [[0,0,255], 1],
-            ...
-        ]
-    @returns Normalised training data
-    """
-    temp_list = []
-    for entry in data:
-        entry_list = []
-        for value in entry[0]:
-            entry_list.append(float(value*NORMALISATION_VALUE))
-        temp_list.append([entry_list, entry[1]])
-    return temp_list
-
 def create_slp(inputs, outputs):
 
     # Create the perceptron
@@ -57,7 +36,7 @@ def create_slp(inputs, outputs):
     # Instantiate mse for the loop
     mse =999
 
-    while (abs(mse-LMSE) > 0.002 and epochs < 500):
+    while (abs(mse-LMSE) > 0.139 and epochs < 500):
 
         # Epoch cumulative error
         error = 0
@@ -72,7 +51,7 @@ def create_slp(inputs, outputs):
             iter_error = outputs[i] - output
 
             # Add the error to the epoch error
-            error += iter_error
+            error += iter_error**2
 
             # Adjust the weights based on inputs and the error
             p.weight_adjustment(inputs[i], iter_error)
