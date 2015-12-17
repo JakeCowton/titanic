@@ -55,7 +55,6 @@ def random_forest():
         f1 = em.calculate_f1()
         f_scores.append(f1)
 
-
     output = forest.predict(test_data)
 
     write_results("rand_forest_entropy.csv", ids, output)
@@ -146,7 +145,7 @@ def mlp():
             data[i]['inputs'] = train_data[i]
             data[i]['outputs'] = expected_training_outputs[i]
 
-        nn = create_nn(data, (no_of_inputs,100,1))
+        nn = create_nn(data, (no_of_inputs,3,1))
 
         evaluation = []
         for sample in eval_data:
@@ -213,57 +212,6 @@ def sk_svm():
 
     return f_scores
 
-def ga_mlp():
-    test_df = get_testing_data()
-    ids = test_df.PassengerId.values
-
-    ga = MLPFeatureSelector()
-    features = ga.calculate()
-
-    print features
-
-    test_data = ga.massage_data_without_outputs(test_df, features)
-
-    f_scores = []
-
-    for i in range(K_FOLDS):
-        train_df = get_training_data(fold=i)
-        eval_df = get_evaluation_data(fold=i)
-
-        expected_training_outputs = train_df.Survived.values
-        train_data = ga.massage_data_with_outputs(train_df, features)
-
-        expected_eval_outputs = eval_df.Survived.values
-        eval_data = ga.massage_data_with_outputs(eval_df, features)
-
-        no_of_inputs = features.count(1)
-
-        nn = create_nn(train_data, (no_of_inputs, 3, 1))
-
-        evaluation = []
-        for sample in eval_data:
-            out = call_nn(nn, sample[0])
-            if out >= 0.5:
-                evaluation.append(1)
-            else:
-                evaluation.append(0)
-
-        em = EvaluationMetrics(evaluation, expected_eval_outputs)
-        f1 = em.calculate_f1()
-        f_scores.append(f1)
-
-    output = []
-    for sample in test_data:
-        out = call_nn(nn, sample[0])
-        if out >= 0.5:
-            output.append(1)
-        else:
-            output.append(0)
-
-    write_results("ga_mlp.csv", ids, output)
-
-    return f_scores
-
 def ga_rfc():
     test_df = get_testing_data()
     ids = test_df.PassengerId.values
@@ -271,6 +219,7 @@ def ga_rfc():
     ga = RFCFeatureSelector()
     features = ga.calculate()
 
+    print "RFC features:"
     print features
 
     test_data = ga.massage_data_without_outputs(test_df, features)
@@ -306,6 +255,58 @@ def ga_rfc():
 
     return f_scores
 
+def ga_mlp():
+    test_df = get_testing_data()
+    ids = test_df.PassengerId.values
+
+    ga = MLPFeatureSelector()
+    features = ga.calculate()
+
+    print "MLP features:"
+    print features
+
+    test_data = ga.massage_data_without_outputs(test_df, features)
+
+    f_scores = []
+
+    for i in range(K_FOLDS):
+        train_df = get_training_data(fold=i)
+        eval_df = get_evaluation_data(fold=i)
+
+        expected_training_outputs = train_df.Survived.values
+        train_data = ga.massage_data_with_outputs(train_df, features)
+
+        expected_eval_outputs = eval_df.Survived.values
+        eval_data = ga.massage_data_with_outputs(eval_df, features)
+
+        no_of_inputs = features.count(1)
+
+        nn = create_nn(train_data, (no_of_inputs, 10, 1))
+
+        evaluation = []
+        for sample in eval_data:
+            out = call_nn(nn, sample[0])
+            if out >= 0.5:
+                evaluation.append(1)
+            else:
+                evaluation.append(0)
+
+        em = EvaluationMetrics(evaluation, expected_eval_outputs)
+        f1 = em.calculate_f1()
+        f_scores.append(f1)
+
+    output = []
+    for sample in test_data:
+        out = call_nn(nn, sample[0])
+        if out >= 0.5:
+            output.append(1)
+        else:
+            output.append(0)
+
+    write_results("ga_mlp.csv", ids, output)
+
+    return f_scores
+
 def ga_svm():
     test_df = get_testing_data()
     ids = test_df.PassengerId.values
@@ -313,6 +314,7 @@ def ga_svm():
     ga = SVMFeatureSelector()
     features = ga.calculate()
 
+    print "SVM features:"
     print features
 
     test_data = ga.massage_data_without_outputs(test_df, features)
